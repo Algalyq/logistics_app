@@ -4,9 +4,11 @@ import { useRouter } from 'expo-router';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { LanguageSwitcher } from '@/components/auth/LanguageSwitcher';
+import { HeaderLanguageSwitcher } from '@/components/HeaderLanguageSwitcher';
 import { tabStyles } from '@/assets/styles/tabStyles';
 import { COLORS } from '@/assets/styles/authStyles';
 import { useTranslation } from '@/translations/useTranslation';
+import { MaterialIcons } from '@expo/vector-icons';
 
 export default function ProfileScreen() {
   const router = useRouter();
@@ -31,13 +33,10 @@ export default function ProfileScreen() {
       <View style={styles.header}>
         <View style={styles.headerRow}>
           <TouchableOpacity onPress={goBack} style={styles.backButton}>
-            <Image 
-              source={require('@/assets/images/icon.png')} // Replace with back icon
-              style={styles.backIcon}
-            />
+            <MaterialIcons name="arrow-back" size={20} color="#FFFFFF" />
           </TouchableOpacity>
           <ThemedText style={styles.headerTitle}>{t('profile')}</ThemedText>
-          <View style={styles.placeholder} />
+          <HeaderLanguageSwitcher />
         </View>
       </View>
       
@@ -74,14 +73,7 @@ export default function ProfileScreen() {
           </View>
         </View>
         
-        {/* Language Settings */}
-        <View style={tabStyles.card}>
-          <ThemedText style={tabStyles.cardTitle}>{t('language')}</ThemedText>
-          <View style={styles.languageContainer}>
-            <ThemedText style={styles.languageLabel}>{t('selectLanguage')}:</ThemedText>
-            <LanguageSwitcher />
-          </View>
-        </View>
+        
         
         {/* Other Settings */}
         <View style={tabStyles.card}>
@@ -89,26 +81,17 @@ export default function ProfileScreen() {
           
           <TouchableOpacity style={styles.settingRow}>
             <ThemedText>{t('notifications')}</ThemedText>
-            <Image 
-              source={require('@/assets/images/icon.png')} // Replace with arrow icon
-              style={styles.arrowIcon}
-            />
+            <MaterialIcons name="notifications" size={24} color="#282828" />
           </TouchableOpacity>
           
           <TouchableOpacity style={styles.settingRow}>
             <ThemedText>{t('security')}</ThemedText>
-            <Image 
-              source={require('@/assets/images/icon.png')} // Replace with arrow icon
-              style={styles.arrowIcon}
-            />
+            <MaterialIcons name="lock" size={24} color="#282828" />
           </TouchableOpacity>
           
           <TouchableOpacity style={styles.settingRow}>
             <ThemedText>{t('help')}</ThemedText>
-            <Image 
-              source={require('@/assets/images/icon.png')} // Replace with arrow icon
-              style={styles.arrowIcon}
-            />
+            <MaterialIcons name="help" size={24} color="#282828" />
           </TouchableOpacity>
         </View>
         

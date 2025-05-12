@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, FlatList, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
-import { useRouter } from 'expo-router';
+import { View, FlatList, TouchableOpacity, StyleSheet, ScrollView, Text } from 'react-native';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { tabStyles } from '@/assets/styles/tabStyles';
@@ -8,6 +8,7 @@ import { useTranslation } from '@/translations/useTranslation';
 import { TabHeader } from '@/components/tabs/TabHeader';
 import { OrderItem } from '@/components/orders/OrderItem';
 import { OrderFilters, FilterParams } from '@/components/orders/OrderFilters';
+import { MaterialIcons } from '@expo/vector-icons';
 
 // Import mock data
 const orderData = require('../mock-data/orders.json');
@@ -35,20 +36,43 @@ interface OrderItem {
 
 export default function OrdersScreen() {
   const router = useRouter();
+  const params = useLocalSearchParams();
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState('new');
+  const [activeTab, setActiveTab] = useState(
+    params.tab ? String(params.tab) : 'new'
+  );
   const [selectedOrder, setSelectedOrder] = useState<string | null>(null);
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState(
+    params.status ? String(params.status) : 'all'
+  );
   
-  // Advanced filter states
-  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  // Filter params from order-filter page
   const [filterParams, setFilterParams] = useState<FilterParams>({
-    vehicleType: null,
-    productType: null,
-    origin: null,
-    destination: null,
-    priceRange: null,
+    vehicleType: params.vehicleType ? String(params.vehicleType) : null,
+    productType: params.productType ? String(params.productType) : null,
+    origin: params.origin ? String(params.origin) : null,
+    destination: params.destination ? String(params.destination) : null,
+    priceRange: params.priceRange ? String(params.priceRange) : null,
   });
+  
+  const [searchQuery, setSearchQuery] = useState<string>(
+    params.searchQuery ? String(params.searchQuery) : ''
+  );
+  
+  // Count active filters for badge display
+  const getActiveFiltersCount = () => {
+    let count = 0;
+    if (filterParams.vehicleType) count++;
+    if (filterParams.productType) count++;
+    if (filterParams.origin) count++;
+    if (filterParams.destination) count++;
+    if (filterParams.priceRange) count++;
+    if (searchQuery) count++;
+    if (activeTab === 'my' && statusFilter !== 'all') count++;
+    return count;
+  };
+  
+  const activeFiltersCount = getActiveFiltersCount();
   
   // Extract unique values for filter options
   const extractFilterOptions = (data: OrderItem[], key: keyof OrderItem) => {
@@ -107,6 +131,19 @@ export default function OrdersScreen() {
     let filteredOrders = activeTab === 'new' 
       ? orderData.newOrders 
       : getMyOrdersByStatus(statusFilter);
+    
+    // Apply search query if present
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase().trim();
+      filteredOrders = filteredOrders.filter((order: OrderItem) => 
+        order.orderId.toLowerCase().includes(query) ||
+        order.customer.toLowerCase().includes(query) ||
+        order.origin.toLowerCase().includes(query) ||
+        order.destination.toLowerCase().includes(query) ||
+        order.vehicleType.toLowerCase().includes(query) ||
+        order.productType.toLowerCase().includes(query)
+      );
+    }
     
     // Apply advanced filters if they are set
     if (filterParams.vehicleType) {
@@ -200,9 +237,60 @@ export default function OrdersScreen() {
     );
   };
   
+  const navigateToFilter = () => {
+    // Pass all current filter parameters to the filter page
+    const params: Record<string, string> = {
+      tab: activeTab
+    };
+    
+    if (searchQuery) {
+      params.searchQuery = searchQuery;
+    }
+    
+    if (activeTab === 'my' && statusFilter !== 'all') {
+      params.status = statusFilter;
+    }
+    
+    // Add filter parameters
+    if (filterParams.vehicleType) {
+      params.vehicleType = filterParams.vehicleType;
+    }
+    
+    if (filterParams.productType) {
+      params.productType = filterParams.productType;
+    }
+    
+    if (filterParams.origin) {
+      params.origin = filterParams.origin;
+    }
+    
+    if (filterParams.destination) {
+      params.destination = filterParams.destination;
+    }
+    
+    if (filterParams.priceRange) {
+      params.priceRange = filterParams.priceRange;
+    }
+    
+    router.push({
+      pathname: '/order-filter',
+      params: params
+    });
+  };
+
   return (
     <ThemedView style={tabStyles.container}>
-      <TabHeader title={t('orders')} />
+      <View style={styles.customHeader}>
+        <ThemedText style={styles.headerTitle}>{t('orders')}</ThemedText>
+        <TouchableOpacity onPress={navigateToFilter} style={styles.filterButton}>
+          <MaterialIcons name="filter-list" size={24} color="#FBFBFB" />
+          {activeFiltersCount > 0 && (
+            <View style={styles.filterBadge}>
+              <Text style={styles.filterBadgeText}>{activeFiltersCount}</Text>
+            </View>
+          )}
+        </TouchableOpacity>
+      </View>
       
       {/* Tab Navigation */}
       <View style={tabStyles.tabContainer}>
@@ -233,34 +321,6 @@ export default function OrdersScreen() {
       {/* Status Filters for My Orders */}
       {activeTab === 'my' && renderMyOrdersStatusFilters()}
       
-      {/* Toggle Advanced Filters Button */}
-      <View style={styles.advancedFiltersToggleContainer}>
-        <TouchableOpacity 
-          style={styles.advancedFiltersToggle}
-          onPress={() => setShowAdvancedFilters(!showAdvancedFilters)}
-        >
-          <ThemedText style={styles.advancedFiltersToggleText}>
-            {showAdvancedFilters ? t('hideFilters') : t('showFilters')}
-          </ThemedText>
-        </TouchableOpacity>
-      </View>
-      
-      {/* Advanced Filters */}
-      {showAdvancedFilters && (
-        <OrderFilters
-          vehicleTypeFilter={filterParams.vehicleType}
-          productTypeFilter={filterParams.productType}
-          originFilter={filterParams.origin}
-          destinationFilter={filterParams.destination}
-          priceRangeFilter={filterParams.priceRange}
-          onFilterChange={handleFilterChange}
-          vehicleTypes={vehicleTypeOptions}
-          productTypes={productTypeOptions}
-          origins={originOptions}
-          destinations={destinationOptions}
-          priceRanges={priceRangeOptions}
-        />
-      )}
       
       {/* Orders List */}
       <FlatList
@@ -289,6 +349,50 @@ export default function OrdersScreen() {
 }
 
 const styles = StyleSheet.create({
+  customHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingTop: 60,
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+    backgroundColor: tabStyles.actionButton.backgroundColor,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#FBFBFB',
+    fontFamily: 'Comfortaa',
+  },
+  filterButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+  },
+  filterBadge: {
+    position: 'absolute',
+    top: -5,
+    right: -5,
+    backgroundColor: '#FF5252',
+    borderRadius: 12,
+    minWidth: 24,
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 5,
+    borderWidth: 2,
+    borderColor: '#FBFBFB',
+  },
+  filterBadgeText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: 'bold',
+    fontFamily: 'Comfortaa',
+  },
   statusFiltersContainer: {
     paddingHorizontal: 20,
     marginBottom: 16,

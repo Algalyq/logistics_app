@@ -6,6 +6,7 @@ import { ThemedView } from '@/components/ThemedView';
 import { tabStyles } from '@/assets/styles/tabStyles';
 import { useTranslation } from '@/translations/useTranslation';
 import { Card } from '@/components/tabs/Card';
+import { MaterialIcons } from '@expo/vector-icons';
 
 // Mock function to fetch order by ID
 const fetchOrderById = (id: string) => {
@@ -67,10 +68,7 @@ export default function OrderDetailsScreen() {
       <ThemedView style={tabStyles.container}>
         <View style={styles.header}>
           <TouchableOpacity onPress={handleGoBack} style={styles.backButton}>
-            <Image 
-              source={require('@/assets/images/icon.png')} // Replace with back icon
-              style={styles.backIcon}
-            />
+          <MaterialIcons name="arrow-back" size={20} color="#FFFFFF" />
           </TouchableOpacity>
           <ThemedText style={styles.headerTitle}>{t('loading')}</ThemedText>
           <View style={styles.placeholder} />
@@ -106,10 +104,7 @@ export default function OrderDetailsScreen() {
     <ThemedView style={tabStyles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={handleGoBack} style={styles.backButton}>
-          <Image 
-            source={require('@/assets/images/icon.png')} // Replace with back icon
-            style={styles.backIcon}
-          />
+          <MaterialIcons name="arrow-back" size={20} color="#FFFFFF" />
         </TouchableOpacity>
         <ThemedText style={styles.headerTitle}>{t('orderDetails')}</ThemedText>
         <View style={styles.placeholder} />
