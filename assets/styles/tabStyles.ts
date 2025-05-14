@@ -1,5 +1,6 @@
-import { StyleSheet, Dimensions } from 'react-native';
+import { StyleSheet, Dimensions, useColorScheme } from 'react-native';
 import { COLORS } from './authStyles';
+import { Colors } from '@/constants/Colors';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -7,7 +8,7 @@ export const tabStyles = StyleSheet.create({
   // Common container styles
   container: {
     flex: 1,
-    // backgroundColor: '#F5F7FA',
+    // Will be overridden by ThemedView
   },
   
   // Common header styles
@@ -15,7 +16,7 @@ export const tabStyles = StyleSheet.create({
     paddingTop: 60,
     paddingHorizontal: 20,
     paddingBottom: 20,
-    backgroundColor: COLORS.PRIMARY,
+    backgroundColor: COLORS.PRIMARY, // Will be set to the theme primary color
   },
   headerContent: {
     flexDirection: 'row',
@@ -25,7 +26,7 @@ export const tabStyles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#FBFBFB',
+    color: '#FBFBFB', // Light text on dark background header
     fontFamily: 'Comfortaa',
   },
   welcome: {
@@ -82,13 +83,13 @@ export const tabStyles = StyleSheet.create({
   },
   viewAllText: {
     fontSize: 14,
-    color: COLORS.PRIMARY,
+    color: COLORS.PRIMARY, // Will use the theme primary color
     fontWeight: '600',
   },
   
   // Card styles
   card: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#FFFFFF', // Will be overridden by ThemedView for dark mode
     borderRadius: 12,
     padding: 16,
     marginBottom: 16,
@@ -107,7 +108,7 @@ export const tabStyles = StyleSheet.create({
   cardTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#282828',
+    color: '#282828', // Will be overridden by ThemedText for dark mode
   },
   
   // Tabs navigation styles
@@ -124,14 +125,14 @@ export const tabStyles = StyleSheet.create({
     borderBottomColor: 'transparent',
   },
   activeTab: {
-    borderBottomColor: COLORS.PRIMARY,
+    borderBottomColor: COLORS.PRIMARY, // Will use the theme primary color
   },
   tabText: {
     fontSize: 16,
-    color: '#777777',
+    color: '#777777', // Will be overridden by ThemedText for dark mode
   },
   activeTabText: {
-    color: COLORS.PRIMARY,
+    color: COLORS.PRIMARY, // Will use the theme primary color
     fontWeight: '600',
   },
   
@@ -157,7 +158,7 @@ export const tabStyles = StyleSheet.create({
   // Button styles
   actionButton: {
     flex: 1,
-    backgroundColor: COLORS.PRIMARY,
+    backgroundColor: COLORS.PRIMARY, // Will use the theme primary color
     paddingVertical: 10,
     borderRadius: 8,
     alignItems: 'center',

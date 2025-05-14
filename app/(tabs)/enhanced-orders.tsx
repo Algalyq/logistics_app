@@ -318,10 +318,6 @@ export default function OrdersScreen() {
         </TouchableOpacity>
       </View>
       
-      {/* Status Filters for My Orders */}
-      {activeTab === 'my' && renderMyOrdersStatusFilters()}
-      
-      
       {/* Orders List */}
       <FlatList
         data={getFilteredOrders()}

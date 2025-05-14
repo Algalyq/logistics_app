@@ -6,6 +6,11 @@ export type TranslationKeys = {
   // General
   appName: string;
   
+  // Theme Settings
+  appearance: string;
+  themeMode: string;
+  themeColor: string;
+  
   // Auth Screens
   login: string;
   register: string;
@@ -107,10 +112,125 @@ export type TranslationKeys = {
 };
 
 export const translations: Record<Language, TranslationKeys> = {
+  // EN translations
+  en: {
+    // General
+    appName: 'Trackit',
+    
+    // Theme Settings
+    appearance: 'Appearance',
+    themeMode: 'Theme Mode',
+    themeColor: 'Theme Color',
+    
+    // Auth Screens
+    login: 'Login',
+    register: 'Register',
+    email: 'Email',
+    password: 'Password',
+    confirmPassword: 'Confirm Password',
+    fullName: 'Full Name',
+    forgotPassword: 'Forgot Password?',
+    dontHaveAccount: 'Don\'t have an account?',
+    alreadyHaveAccount: 'Already have an account?',
+    enterEmail: 'Enter your email',
+    enterPassword: 'Enter your password',
+    enterFullName: 'Enter your full name',
+    confirmYourPassword: 'Confirm your password',
+    signIn: 'SIGN IN',
+    signUp: 'SIGN UP',
+    welcomeBack: 'Welcome back!',
+    createAccount: 'Create an account',
+    getStarted: 'Get started with the app',
+    
+    // Tab Navigation
+    home: 'Home',
+    analysis: 'Analysis',
+    orders: 'Orders',
+    profile: 'Profile',
+    
+    // Home Tab
+    dashboard: 'Dashboard',
+    orderCompletionRate: 'Order Completion Rate',
+    profitOverview: 'Profit Overview',
+    totalOrders: 'Total Orders',
+    completed: 'Completed',
+    pending: 'Pending',
+    week: 'Week',
+    month: 'Month',
+    recentOrders: 'Recent Orders',
+    viewAll: 'View All',
+    noRecentOrders: 'No recent orders to display',
+    
+    // Analysis Tab
+    logisticsAnalytics: 'Logistics Analytics',
+    orderStatistics: 'Order Statistics',
+    today: 'Today',
+    thisWeek: 'This Week',
+    thisMonth: 'This Month',
+    averageOrderValue: 'Average Order Value',
+    topVehicleTypes: 'Top Vehicle Types',
+    topProducts: 'Top Products',
+    orderTrends: 'Order Trends',
+    
+    // Orders Tab
+    newOrders: 'New Orders',
+    myOrders: 'My Orders',
+    all: 'All',
+    inProgress: 'In Progress',
+    cancelled: 'Cancelled',
+    customer: 'Customer',
+    origin: 'Origin',
+    destination: 'Destination',
+    vehicle: 'Vehicle',
+    product: 'Product',
+    weight: 'Weight',
+    price: 'Price',
+    driver: 'Driver',
+    eta: 'ETA',
+    deliveredOn: 'Delivered On',
+    reason: 'Reason',
+    trackOrder: 'Track Order',
+    acceptOrder: 'Accept Order',
+    viewDetails: 'View Details',
+    reject: 'Reject',
+    noOrdersFound: 'No orders found',
+    noNewOrders: 'No new orders',
+    
+    // Filter Options
+    showFilters: 'Show Filters',
+    hideFilters: 'Hide Filters',
+    vehicleType: 'Vehicle Type',
+    productType: 'Product Type',
+    priceRange: 'Price Range',
+    
+    // Profile Page
+    personalInfo: 'Personal Info',
+    phone: 'Phone',
+    company: 'Company',
+    language: 'Language',
+    selectLanguage: 'Select Language',
+    settings: 'Settings',
+    notifications: 'Notifications',
+    security: 'Security',
+    help: 'Help',
+    logout: 'Logout',
+    
+    // Button Actions
+    continue: 'Continue',
+    cancel: 'Cancel',
+    save: 'Save',
+    accept: 'Accept',
+  },
+  
   // Kazakh translations
   kk: {
     // General
     appName: 'Trackit',
+    
+    // Theme Settings
+    appearance: 'Сыртқы көрініс',
+    themeMode: 'Тақырып режимі',
+    themeColor: 'Тақырып түсі',
     
     // Auth Screens
     login: 'Кіру',
@@ -217,6 +337,11 @@ export const translations: Record<Language, TranslationKeys> = {
     // General
     appName: 'Trackit',
     
+    // Theme Settings
+    appearance: 'Внешний вид',
+    themeMode: 'Режим темы',
+    themeColor: 'Цвет темы',
+    
     // Auth Screens
     login: 'Вход',
     register: 'Регистрация',
@@ -315,110 +440,5 @@ export const translations: Record<Language, TranslationKeys> = {
     cancel: 'Отмена',
     save: 'Сохранить',
     accept: 'Принять',
-  },
-  
-  // English translations (default fallback)
-  en: {
-    // General
-    appName: 'Trackit',
-    
-    // Auth Screens
-    login: 'Log In',
-    register: 'Register',
-    email: 'Email',
-    password: 'Password',
-    confirmPassword: 'Confirm Password',
-    fullName: 'Full Name',
-    forgotPassword: 'Forgot Password?',
-    dontHaveAccount: 'Don\'t have an account?',
-    alreadyHaveAccount: 'Already have an account?',
-    enterEmail: 'Enter your email',
-    enterPassword: 'Enter your password',
-    enterFullName: 'Enter your full name',
-    confirmYourPassword: 'Confirm your password',
-    signIn: 'LOG IN',
-    signUp: 'SIGN UP',
-    welcomeBack: 'Welcome back!',
-    createAccount: 'Create Account',
-    getStarted: 'Sign up to get started with the app',
-    
-    // Tab Navigation
-    home: 'Home',
-    analysis: 'Analysis',
-    orders: 'Orders',
-    profile: 'Profile',
-    
-    // Home Tab
-    dashboard: 'Dashboard',
-    orderCompletionRate: 'Order Completion Rate',
-    profitOverview: 'Profit Overview',
-    totalOrders: 'Total Orders',
-    completed: 'Completed',
-    pending: 'Pending',
-    week: 'Week',
-    month: 'Month',
-    recentOrders: 'Recent Orders',
-    viewAll: 'View All',
-    noRecentOrders: 'No recent orders to display',
-    
-    // Analysis Tab
-    logisticsAnalytics: 'Logistics Analytics',
-    orderStatistics: 'Order Statistics',
-    today: 'Today',
-    thisWeek: 'This Week',
-    thisMonth: 'This Month',
-    averageOrderValue: 'Average Order Value',
-    topVehicleTypes: 'Top Vehicle Types',
-    topProducts: 'Top Products',
-    orderTrends: 'Order Trends',
-    
-    // Orders Tab
-    newOrders: 'New Orders',
-    myOrders: 'My Orders',
-    all: 'All',
-    inProgress: 'In Progress',
-    cancelled: 'Cancelled',
-    customer: 'Customer',
-    origin: 'Origin',
-    destination: 'Destination',
-    vehicle: 'Vehicle',
-    product: 'Product',
-    weight: 'Weight',
-    price: 'Price',
-    driver: 'Driver',
-    eta: 'ETA',
-    deliveredOn: 'Delivered on',
-    reason: 'Reason',
-    trackOrder: 'Track Order',
-    acceptOrder: 'Accept Order',
-    viewDetails: 'View Details',
-    reject: 'Reject',
-    noOrdersFound: 'No orders found',
-    noNewOrders: 'No new orders available',
-    
-    // Filter Options
-    showFilters: 'Show Filters',
-    hideFilters: 'Hide Filters',
-    vehicleType: 'Vehicle Type',
-    productType: 'Product Type',
-    priceRange: 'Price Range',
-    
-    // Profile Page
-    personalInfo: 'Personal Information',
-    phone: 'Phone',
-    company: 'Company',
-    language: 'Language',
-    selectLanguage: 'Select Language',
-    settings: 'Settings',
-    notifications: 'Notifications',
-    security: 'Security',
-    help: 'Help',
-    logout: 'Logout',
-    
-    // Button Actions
-    continue: 'Continue',
-    cancel: 'Cancel',
-    save: 'Save',
-    accept: 'Accept',
-  },
+  }
 };

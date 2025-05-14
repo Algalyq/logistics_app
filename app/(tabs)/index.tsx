@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { tabStyles } from '@/assets/styles/tabStyles';
+import { COLORS } from '@/assets/styles/authStyles';
 import { useTranslation } from '@/translations/useTranslation';
 import { TabHeader } from '@/components/tabs/TabHeader';
 import { Card } from '@/components/tabs/Card';
@@ -142,14 +143,14 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: tabStyles.actionButton.backgroundColor,
+    backgroundColor: '#2E7D32', // Hardcoded primary green color
     justifyContent: 'center',
     alignItems: 'center',
   },
   percentageText: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#FBFBFB',
+    color: '#FBFBFB', // Light text on dark background
   },
   statsContainer: {
     flex: 1,
@@ -160,35 +161,35 @@ const styles = StyleSheet.create({
   },
   statLabel: {
     fontSize: 12,
-    color: '#777777',
+    color: '#777777', // Will be handled by ThemedText
     marginBottom: 2,
   },
   statValue: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#282828',
+    color: '#282828', // Will be handled by ThemedText
   },
   periodSelector: {
     flexDirection: 'row',
     borderRadius: 8,
-    backgroundColor: '#F5F7FA',
+    backgroundColor: '#F5F7FA', // Light background for the selector
     overflow: 'hidden',
     alignSelf: 'flex-end',
   },
   periodButton: {
     paddingVertical: 6,
     paddingHorizontal: 12,
-    backgroundColor: '#F5F7FA',
+    backgroundColor: '#F5F7FA', // Always light background for inactive buttons
   },
   activePeriod: {
-    backgroundColor: tabStyles.actionButton.backgroundColor,
+    backgroundColor: '#2E7D32', // Hardcoded primary green color for active state
   },
   periodText: {
     fontSize: 12,
-    color: '#777777',
+    color: '#777777', // Gray text for inactive state
   },
   activePeriodText: {
-    color: '#FBFBFB',
+    color: '#FBFBFB', // White text on primary color background
     fontWeight: '600',
   },
   profitContainer: {

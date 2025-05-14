@@ -1,14 +1,25 @@
 import { StyleSheet } from 'react-native';
+import { Colors } from '@/constants/Colors';
 
-// Colors
+// Colors for components that don't directly use the theme system
 export const COLORS = {
-  PRIMARY: '#35B468',
-  BACKGROUND: '#FBFBFB',
-  TEXT_DARK: '#282828',
-  TEXT_LIGHT: '#777777',
-  INPUT_BG: '#F1F1F1',
-  PLACEHOLDER: '#AAAAAA',
+  PRIMARY: '#2E7D32',              // Green primary color
+  BACKGROUND: '#FBFBFB',           // Light mode background
+  TEXT_DARK: '#282828',            // Dark text for light mode
+  TEXT_LIGHT: '#777777',           // Light text for both modes
+  INPUT_BG: '#F1F1F1',             // Input background for light mode
+  PLACEHOLDER: '#AAAAAA',          // Placeholder text
 };
+
+// Helper to get theme-aware colors based on system theme
+export const getAuthColors = (isDark = false) => ({
+  PRIMARY: Colors[isDark ? 'dark' : 'light'].primary,
+  BACKGROUND: isDark ? '#151718' : '#FBFBFB',
+  TEXT_DARK: isDark ? '#ECEDEE' : '#282828',
+  TEXT_LIGHT: isDark ? '#9BA1A6' : '#777777',
+  INPUT_BG: isDark ? '#2C2F31' : '#F1F1F1',
+  PLACEHOLDER: isDark ? '#687076' : '#AAAAAA',
+});
 
 // Font families
 export const FONTS = {
@@ -101,6 +112,8 @@ export const authStyles = StyleSheet.create({
     marginBottom: 32,
   },
   actionButton: {
+    // We use COLORS.PRIMARY here, but ThemedView components will override this
+    // with the current theme color from the context
     backgroundColor: COLORS.PRIMARY,
     borderRadius: 12,
     height: 56,

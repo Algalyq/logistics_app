@@ -3,7 +3,6 @@ import { View, StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-nat
 import { useRouter } from 'expo-router';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { LanguageSwitcher } from '@/components/auth/LanguageSwitcher';
 import { HeaderLanguageSwitcher } from '@/components/HeaderLanguageSwitcher';
 import { tabStyles } from '@/assets/styles/tabStyles';
 import { COLORS } from '@/assets/styles/authStyles';
@@ -75,23 +74,25 @@ export default function ProfileScreen() {
         
         
         
+
+        
         {/* Other Settings */}
         <View style={tabStyles.card}>
           <ThemedText style={tabStyles.cardTitle}>{t('settings')}</ThemedText>
           
           <TouchableOpacity style={styles.settingRow}>
             <ThemedText>{t('notifications')}</ThemedText>
-            <MaterialIcons name="notifications" size={24} color="#282828" />
+            <MaterialIcons name="notifications" size={24} color={COLORS.PRIMARY} />
           </TouchableOpacity>
           
           <TouchableOpacity style={styles.settingRow}>
             <ThemedText>{t('security')}</ThemedText>
-            <MaterialIcons name="lock" size={24} color="#282828" />
+            <MaterialIcons name="lock" size={24} color={COLORS.PRIMARY} />
           </TouchableOpacity>
           
           <TouchableOpacity style={styles.settingRow}>
             <ThemedText>{t('help')}</ThemedText>
-            <MaterialIcons name="help" size={24} color="#282828" />
+            <MaterialIcons name="help" size={24} color={COLORS.PRIMARY} />
           </TouchableOpacity>
         </View>
         
@@ -113,7 +114,7 @@ const styles = StyleSheet.create({
     paddingTop: 60,
     paddingHorizontal: 20,
     paddingBottom: 20,
-    backgroundColor: COLORS.PRIMARY,
+    backgroundColor: COLORS.PRIMARY, // This will be replaced dynamically by the theme system
   },
   headerRow: {
     flexDirection: 'row',

@@ -6,17 +6,16 @@ import { useTranslation } from '@/translations/useTranslation';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+// Using light theme only
 import { HapticTab } from '@/components/HapticTab';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
   const { t } = useTranslation();
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarActiveTintColor: Colors.light.primary, // Always use light theme primary color
         headerShown: false,
         tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,

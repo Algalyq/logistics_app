@@ -1,9 +1,10 @@
 import React from 'react';
-import { View, TouchableOpacity, Image } from 'react-native';
+import { View, TouchableOpacity, Image, StyleSheet, useColorScheme } from 'react-native';
 import { useRouter } from 'expo-router';
 import { ThemedText } from '@/components/ThemedText';
 import { tabStyles } from '@/assets/styles/tabStyles';
 import { useTranslation } from '@/translations/useTranslation';
+import { Colors } from '@/constants/Colors';
 
 interface TabHeaderProps {
   title?: string;
@@ -23,8 +24,14 @@ export function TabHeader({
     router.push('/profile');
   };
 
+  // Always use light theme colors regardless of system setting
+  const headerStyle = {
+    ...tabStyles.header,
+    backgroundColor: Colors.light.primary, // Always use green primary color
+  };
+  
   return (
-    <View style={tabStyles.header}>
+    <View style={headerStyle}>
       {showProfile ? (
         <View style={tabStyles.headerContent}>
           <View>

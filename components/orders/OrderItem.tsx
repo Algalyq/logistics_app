@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, useColorScheme } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { useTranslation } from '@/translations/useTranslation';
 import { tabStyles } from '@/assets/styles/tabStyles';
+import { Colors } from '@/constants/Colors';
 
 export interface OrderItemProps {
   id: string;
@@ -176,7 +177,7 @@ const styles = StyleSheet.create({
   },
   selectedCard: {
     borderWidth: 2,
-    borderColor: tabStyles.actionButton.backgroundColor,
+    borderColor: Colors.light.primary, // Always use light theme primary color
   },
   orderHeader: {
     flexDirection: 'row',
@@ -187,7 +188,7 @@ const styles = StyleSheet.create({
   orderId: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#282828',
+    // Color will be handled by ThemedText
     fontFamily: 'Comfortaa',
   },
   statusBadge: {
@@ -294,17 +295,17 @@ const styles = StyleSheet.create({
     marginTop: 12,
     paddingTop: 12,
     borderTopWidth: 1,
-    borderTopColor: '#F0F0F0',
+    borderTopColor: '#F0F0F0', // Light mode border color, would be overridden by ThemedView in dark mode
   },
   viewDetailsButton: {
-    backgroundColor: tabStyles.actionButton.backgroundColor,
+    backgroundColor: Colors.light.primary, // Always use light theme primary color
     paddingVertical: 10,
     borderRadius: 8,
     alignItems: 'center',
-    marginTop: 12,
+    marginTop: 16,
   },
   actionButtonText: {
-    color: '#FFFFFF',
+    color: '#FFFFFF', // Always white text on buttons
     fontWeight: '600',
     fontSize: 14,
   },
