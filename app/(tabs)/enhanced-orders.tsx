@@ -277,7 +277,11 @@ export default function OrdersScreen() {
       params: params
     });
   };
-
+    // Function to truncate text if it's longer than 17 characters
+    const truncateText = (text: string): string => {
+      return text.length > 17 ? text.substring(0, 14) + '...' : text;
+    };
+  
   return (
     <ThemedView style={tabStyles.container}>
       <View style={styles.customHeader}>
@@ -302,7 +306,7 @@ export default function OrdersScreen() {
           }}
         >
           <ThemedText style={[tabStyles.tabText, activeTab === 'new' && tabStyles.activeTabText]}>
-            {t('newOrders')}
+            {truncateText(t('newOrders'))}
           </ThemedText>
         </TouchableOpacity>
         <TouchableOpacity 
@@ -313,7 +317,7 @@ export default function OrdersScreen() {
           }}
         >
           <ThemedText style={[tabStyles.tabText, activeTab === 'my' && tabStyles.activeTabText]}>
-            {t('myOrders')}
+            {truncateText(t('myOrders'))}
           </ThemedText>
         </TouchableOpacity>
       </View>

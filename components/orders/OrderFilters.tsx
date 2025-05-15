@@ -53,7 +53,7 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
     filterType: keyof FilterParams
   ) => {
     return (
-      <View style={styles.filterSection}>
+      <View>
         <ThemedText style={styles.filterTitle}>{title}</ThemedText>
         <ScrollView 
           horizontal 
@@ -116,20 +116,14 @@ const styles = StyleSheet.create({
   container: {
     marginBottom: 16,
   },
-  filterSection: {
-    marginBottom: 10,
-  },
   filterTitle: {
     fontSize: 14,
     fontWeight: '600',
     marginBottom: 8,
     color: '#282828',
-    paddingHorizontal: 20,
     fontFamily: 'Comfortaa',
   },
   filterOptionsContainer: {
-    paddingHorizontal: 20,
-    paddingRight: 40,
   },
   filterOption: {
     paddingHorizontal: 12,

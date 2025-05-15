@@ -44,6 +44,13 @@ export default function OrderDetailsScreen() {
     });
   };
 
+  const handleTrackOrder = () => {
+    router.push({
+      pathname: '/order-tracking',
+      params: { id: orderId }
+    });
+  };
+
   const getStatusText = (status: string) => {
     switch(status) {
       case 'in-progress': return t('inProgress');
@@ -229,7 +236,10 @@ export default function OrderDetailsScreen() {
         )}
         
         {order.status === 'in-progress' && (
-          <TouchableOpacity style={styles.actionButton}>
+          <TouchableOpacity 
+            style={styles.actionButton}
+            onPress={handleTrackOrder}
+          >
             <ThemedText style={styles.actionButtonText}>
               {t('trackOrder')}
             </ThemedText>

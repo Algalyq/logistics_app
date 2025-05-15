@@ -284,6 +284,11 @@ export default function OrderFilterScreen() {
   
   // Render tab selector
   const renderTabSelector = () => {
+    // Function to truncate text if it's longer than 17 characters
+    const truncateText = (text: string): string => {
+      return text.length > 17 ? text.substring(0, 14) + '...' : text;
+    };
+
     return (
       <View style={styles.tabSelector}>
         <TouchableOpacity
@@ -291,7 +296,7 @@ export default function OrderFilterScreen() {
           onPress={() => handleTabChange('new')}
         >
           <ThemedText style={[styles.tabText, activeTab === 'new' && styles.activeTabText]}>
-            {t('newOrders')}
+            {truncateText(t('newOrders'))}
           </ThemedText>
         </TouchableOpacity>
         <TouchableOpacity
@@ -299,7 +304,7 @@ export default function OrderFilterScreen() {
           onPress={() => handleTabChange('my')}
         >
           <ThemedText style={[styles.tabText, activeTab === 'my' && styles.activeTabText]}>
-            {t('myOrders')}
+            {truncateText(t('myOrders'))}
           </ThemedText>
         </TouchableOpacity>
       </View>
@@ -322,38 +327,22 @@ export default function OrderFilterScreen() {
       </View>
       
       <ScrollView style={styles.content}>
-        {/* Search Bar */}
-        <View style={styles.searchContainer}>
-          <View style={styles.searchBar}>
-            <MaterialIcons name="search" size={20} color="#777" style={styles.searchIcon} />
-            <TextInput
-              style={styles.searchInput}
-              placeholder={t('searchOrders')}
-              placeholderTextColor="#777"
-              value={searchQuery}
-              onChangeText={setSearchQuery}
-            />
-            {searchQuery.length > 0 && (
-              <TouchableOpacity onPress={() => setSearchQuery('')}>
-                <MaterialIcons name="close" size={20} color="#777" />
-              </TouchableOpacity>
-            )}
-          </View>
-        </View>
+        
         
         {/* Tab Selector */}
         {renderTabSelector()}
         
         {/* Status Filter (only for My Orders) */}
         {activeTab === 'my' && (
-          <View style={styles.filtersSection}>
+          <View>
             {renderStatusFilters()}
           </View>
         )}
         
         {/* Filters */}
-        <View style={styles.filtersContainer}>
+        {/* <View style={styles.filtersContainer}> */}
           <ThemedText style={styles.filtersTitle}>{t('filters')}</ThemedText>
+
           <OrderFilters
             vehicleTypeFilter={filterParams.vehicleType}
             productTypeFilter={filterParams.productType}
@@ -367,7 +356,7 @@ export default function OrderFilterScreen() {
             destinations={destinationOptions}
             priceRanges={priceRangeOptions}
           />
-        </View>
+        {/* </View> */}
         
     
       </ScrollView>
@@ -545,10 +534,9 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   applyButtonContainer: {
-    padding: 20,
-    backgroundColor: '#FFFFFF',
-    borderTopWidth: 1,
-    borderTopColor: '#E0E0E0',
+    width: '60%',
+    justifyContent: 'center',
+    alignSelf: 'center',
   },
   applyButton: {
     backgroundColor: COLORS.PRIMARY,
@@ -556,11 +544,6 @@ const styles = StyleSheet.create({
     padding: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
   },
   applyButtonText: {
     color: '#FFFFFF',
