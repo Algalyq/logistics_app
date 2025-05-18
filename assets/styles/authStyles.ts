@@ -111,6 +111,12 @@ export const authStyles = StyleSheet.create({
     alignSelf: 'flex-end',
     marginBottom: 32,
   },
+  buttonContainer: {
+    height: 56,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 24,
+  },
   actionButton: {
     // We use COLORS.PRIMARY here, but ThemedView components will override this
     // with the current theme color from the context

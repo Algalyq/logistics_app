@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
+import { View, StyleSheet, ScrollView, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -8,29 +8,37 @@ import { useTranslation } from '@/translations/useTranslation';
 import { Card } from '@/components/tabs/Card';
 import { MaterialIcons } from '@expo/vector-icons';
 
-// Mock function to fetch order by ID
-const fetchOrderById = (id: string) => {
-  // This would be replaced with an API call in a real app
-  const allOrders = [
-    ...require('./mock-data/orders.json').newOrders,
-    ...require('./mock-data/orders.json').myOrders
-  ];
-  return allOrders.find(order => order.id === id) || null;
-};
+// Import order service
+import orderService, { Order, OrderDetail } from '@/api/orderService';
 
 export default function OrderDetailsScreen() {
   const router = useRouter();
   const { t } = useTranslation();
   const params = useLocalSearchParams();
   const orderId = params.id as string;
-  const [order, setOrder] = useState<any>(null);
+  const [order, setOrder] = useState<OrderDetail | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // In a real app, this would be an API call
-    const orderData = fetchOrderById(orderId);
-    setOrder(orderData);
-    setLoading(false);
+    const fetchOrderDetails = async () => {
+      setLoading(true);
+      setError(null);
+      
+      try {
+        console.log('Fetching order details for ID:', orderId);
+        const orderData = await orderService.getOrderById(orderId);
+        console.log('Received order data:', orderData);
+        setOrder(orderData);
+      } catch (err) {
+        console.error('Error fetching order details:', err);
+        setError('Failed to load order details. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchOrderDetails();
   }, [orderId]);
 
   const handleGoBack = () => {
@@ -45,6 +53,7 @@ export default function OrderDetailsScreen() {
   };
 
   const handleTrackOrder = () => {
+    console.log("Order ID: ", orderId)
     router.push({
       pathname: '/order-tracking',
       params: { id: orderId }
@@ -75,13 +84,13 @@ export default function OrderDetailsScreen() {
       <ThemedView style={tabStyles.container}>
         <View style={styles.header}>
           <TouchableOpacity onPress={handleGoBack} style={styles.backButton}>
-          <MaterialIcons name="arrow-back" size={20} color="#FFFFFF" />
+            <MaterialIcons name="arrow-back" size={24} color="#ffffff" />
           </TouchableOpacity>
           <ThemedText style={styles.headerTitle}>{t('loading')}</ThemedText>
-          <View style={styles.placeholder} />
         </View>
         <View style={styles.loadingContainer}>
-          <ThemedText style={styles.loadingText}>{t('loading')}</ThemedText>
+          <ActivityIndicator size="large" color="#35B468" />
+          <ThemedText style={styles.loadingText}>Loading order details...</ThemedText>
         </View>
       </ThemedView>
     );
@@ -107,6 +116,18 @@ export default function OrderDetailsScreen() {
     );
   }
 
+  // Create formatted representations of customer data
+  const formatCustomerName = (customer: any) => {
+    if (!customer) return 'N/A';
+    return `${customer.first_name} ${customer.last_name}`;
+  };
+  
+  // Create formatted representations of location data
+  const formatLocationName = (location: any) => {
+    if (!location) return 'N/A';
+    return location.name;
+  };
+
   return (
     <ThemedView style={tabStyles.container}>
       <View style={styles.header}>
@@ -121,7 +142,7 @@ export default function OrderDetailsScreen() {
         {/* Order Status */}
         <Card>
           <View style={styles.orderHeader}>
-            <ThemedText style={styles.orderId}>{order.orderId}</ThemedText>
+            <ThemedText style={styles.orderId}>{order.order_id}</ThemedText>
             <View style={[styles.statusBadge, getStatusBadgeStyle(order.status)]}>
               <ThemedText style={styles.statusText}>
                 {getStatusText(order.status)}
@@ -136,7 +157,7 @@ export default function OrderDetailsScreen() {
           
           <View style={styles.detailRow}>
             <ThemedText style={styles.detailLabel}>{t('customer')}:</ThemedText>
-            <ThemedText style={styles.detailValue}>{order.customer}</ThemedText>
+            <ThemedText style={styles.detailValue}>{formatCustomerName(order.customer)}</ThemedText>
           </View>
           
           <View style={styles.priceContainer}>
@@ -146,7 +167,7 @@ export default function OrderDetailsScreen() {
         </Card>
         
         {/* Route Information */}
-        <Card title={t('routeInformation')}>
+        <Card title="Route Information">
           <View style={styles.routeContainer}>
             <View style={styles.locationColumn}>
               <View style={styles.locationDot} />
@@ -156,53 +177,58 @@ export default function OrderDetailsScreen() {
             <View style={styles.routeDetails}>
               <View style={styles.locationInfo}>
                 <ThemedText style={styles.locationLabel}>{t('origin')}:</ThemedText>
-                <ThemedText style={styles.locationValue}>{order.origin}</ThemedText>
+                <ThemedText style={styles.locationValue}>{formatLocationName(order.origin)}</ThemedText>
               </View>
               <View style={styles.locationInfo}>
                 <ThemedText style={styles.locationLabel}>{t('destination')}:</ThemedText>
-                <ThemedText style={styles.locationValue}>{order.destination}</ThemedText>
+                <ThemedText style={styles.locationValue}>{formatLocationName(order.destination)}</ThemedText>
               </View>
             </View>
           </View>
         </Card>
         
         {/* Cargo Details */}
-        <Card title={t('cargoDetails')}>
+        <Card title="Cargo Details">
           <View style={styles.detailsGrid}>
             <View style={styles.detailsColumn}>
               <ThemedText style={styles.detailsLabel}>{t('vehicle')}:</ThemedText>
-              <ThemedText style={styles.detailsValue}>{order.vehicleType}</ThemedText>
+              <ThemedText style={styles.detailsValue}>{order.vehicle_type}</ThemedText>
             </View>
             <View style={styles.detailsColumn}>
               <ThemedText style={styles.detailsLabel}>{t('product')}:</ThemedText>
-              <ThemedText style={styles.detailsValue}>{order.productType}</ThemedText>
+              <ThemedText style={styles.detailsValue}>{order.product_type}</ThemedText>
             </View>
             <View style={styles.detailsColumn}>
               <ThemedText style={styles.detailsLabel}>{t('weight')}:</ThemedText>
-              <ThemedText style={styles.detailsValue}>{order.weight}</ThemedText>
+              <ThemedText style={styles.detailsValue}>{order.weight} kg</ThemedText>
             </View>
           </View>
         </Card>
         
-        {/* Delivery Information */}
-        {order.status === 'in-progress' && (
-          <Card title={t('deliveryInformation')}>
-            <View style={styles.detailRow}>
-              <ThemedText style={styles.detailLabel}>{t('driver')}:</ThemedText>
-              <ThemedText style={styles.detailValue}>{order.driverName}</ThemedText>
-            </View>
-            <View style={styles.detailRow}>
-              <ThemedText style={styles.detailLabel}>{t('eta')}:</ThemedText>
-              <ThemedText style={styles.detailValue}>{order.estimatedArrival}</ThemedText>
+        {/* If there's a driver assigned */}
+        {order.driver && (
+          <Card title="Driver Information">
+            <View style={styles.detailsGrid}>
+              <View style={styles.detailsColumn}>
+                <ThemedText style={styles.detailsLabel}>{t('driver')}:</ThemedText>
+                <ThemedText style={styles.detailsValue}>{formatCustomerName(order.driver)}</ThemedText>
+              </View>
+              {order.estimated_arrival && (
+                <View style={styles.detailsColumn}>
+                  <ThemedText style={styles.detailsLabel}>{t('eta')}:</ThemedText>
+                  <ThemedText style={styles.detailsValue}>{order.estimated_arrival}</ThemedText>
+                </View>
+              )}
             </View>
           </Card>
         )}
-        
-        {order.status === 'completed' && (
-          <Card title={t('deliveryInformation')}>
+
+        {/* If order is completed */}
+        {order.status === 'completed' && order.delivered_on && (
+          <Card title="Delivery Information">
             <View style={styles.detailRow}>
-              <ThemedText style={styles.detailLabel}>{t('deliveredOn')}:</ThemedText>
-              <ThemedText style={styles.detailValue}>{order.deliveredOn}</ThemedText>
+              <ThemedText style={styles.detailLabel}>Delivered On:</ThemedText>
+              <ThemedText style={styles.detailValue}>{order.delivered_on}</ThemedText>
             </View>
           </Card>
         )}

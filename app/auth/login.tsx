@@ -6,6 +6,8 @@ import {
   Platform,
   ScrollView,
   TouchableOpacity,
+  Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { Link, useRouter, useNavigation } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -18,9 +20,13 @@ import { AuthButton } from '@/components/auth/AuthButton';
 import { LanguageSwitcher } from '@/components/auth/LanguageSwitcher';
 import { useTranslation } from '@/translations/useTranslation';
 
+// Import API client
+import apiClient from '@/api/client';
+
 export default function LoginScreen() {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const navigation = useNavigation();
   const { t } = useTranslation();
@@ -32,9 +38,25 @@ export default function LoginScreen() {
     });
   }, [navigation]);
 
-  const handleLogin = () => {
-    // Add authentication logic here
-    router.replace('/(tabs)');
+  const handleLogin = async () => {
+    if (!username || !password) {
+      Alert.alert(t('error'), t('pleaseEnterCredentials'));
+      return;
+    }
+    
+    setIsLoading(true);
+    try {
+      // Call API for authentication
+      await apiClient.login(username, password);
+      // Navigate to the main screen if successful
+      router.replace('/(tabs)');
+    } catch (error) {
+      // Handle login error
+      const errorMessage = error instanceof Error ? error.message : t('loginFailed');
+      Alert.alert(t('error'), errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -63,11 +85,10 @@ export default function LoginScreen() {
           <ThemedText style={authStyles.subtitle}>{t('welcomeBack')}</ThemedText>
           
           <AuthInput
-            label={t('email')}
-            placeholder={t('enterEmail')}
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
+            label={t('username')}
+            placeholder={t('enterUsername')}
+            value={username}
+            onChangeText={setUsername}
             autoCapitalize="none"
           />
           
@@ -83,7 +104,13 @@ export default function LoginScreen() {
             <ThemedText style={authStyles.highlightedLinkText}>{t('forgotPassword')}</ThemedText>
           </TouchableOpacity>
           
-          <AuthButton title={t('signIn')} onPress={handleLogin} />
+          {isLoading ? (
+            <View style={authStyles.buttonContainer}>
+              <ActivityIndicator size="large" color="#35B468" />
+            </View>
+          ) : (
+            <AuthButton title={t('signIn')} onPress={handleLogin} />
+          )}
           
           <View style={authStyles.linkRow}>
             <ThemedText style={authStyles.linkText}>{t('dontHaveAccount')} </ThemedText>

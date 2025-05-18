@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, FlatList, TouchableOpacity, StyleSheet, ScrollView, Text } from 'react-native';
+import { View, FlatList, TouchableOpacity, StyleSheet, ScrollView, Text, ActivityIndicator } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -10,13 +10,11 @@ import { OrderItem } from '@/components/orders/OrderItem';
 import { OrderFilters, FilterParams } from '@/components/orders/OrderFilters';
 import { MaterialIcons } from '@expo/vector-icons';
 
-// Import mock data
-const orderData = require('../mock-data/orders.json');
+// Import the order service for API calls
+import orderService, { Order } from '@/api/orderService';
 
-// Define type for order items
-type OrderStatus = 'new' | 'in-progress' | 'completed' | 'cancelled';
-
-interface OrderItem {
+// Map API Order type to the component's expected format
+interface OrderItemExtended {
   id: string;
   orderId: string;
   customer: string;
@@ -26,7 +24,7 @@ interface OrderItem {
   productType: string;
   weight: string;
   price: number;
-  status: OrderStatus;
+  status: string;
   date: string;
   driverName?: string;
   estimatedArrival?: string;
@@ -34,10 +32,33 @@ interface OrderItem {
   reason?: string;
 }
 
+// Function to map API Order to component's expected format
+const mapApiOrderToComponentOrder = (order: Order): OrderItemExtended => {
+  return {
+    id: order.id,
+    orderId: order.order_id,
+    customer: order.customer_name,
+    origin: order.origin_name,
+    destination: order.destination_name,
+    vehicleType: order.vehicle_type,
+    productType: order.product_type,
+    weight: order.weight,
+    price: order.price,
+    status: order.status,
+    date: order.date,
+    driverName: order.driver_name,
+    estimatedArrival: order.estimated_arrival,
+    deliveredOn: order.delivered_on,
+    reason: order.reason
+  };
+};
+
 export default function OrdersScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
   const { t } = useTranslation();
+  
+  // State variables
   const [activeTab, setActiveTab] = useState(
     params.tab ? String(params.tab) : 'new'
   );
@@ -45,6 +66,42 @@ export default function OrdersScreen() {
   const [statusFilter, setStatusFilter] = useState(
     params.status ? String(params.status) : 'all'
   );
+  
+  // State for API data
+  const [newOrders, setNewOrders] = useState<Order[]>([]);
+  const [myOrders, setMyOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  
+  // Fetch data from the respective API endpoints
+  useEffect(() => {
+    const fetchOrders = async () => {
+      setLoading(true);
+      setError(null);
+      
+      try {
+        // Fetch new orders
+        if (activeTab === 'new') {
+          const newOrdersData = await orderService.getNewOrders();
+          console.log('Fetched new orders:', newOrdersData.length);
+          setNewOrders(newOrdersData);
+        } 
+        // Fetch my orders
+        else {
+          const myOrdersData = await orderService.getMyOrders();
+          console.log('Fetched my orders:', myOrdersData.length);
+          setMyOrders(myOrdersData);
+        }
+      } catch (err) {
+        console.error('Error fetching orders:', err);
+        setError('Failed to fetch orders. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchOrders();
+  }, [activeTab]); // Re-fetch when tab changes
   
   // Filter params from order-filter page
   const [filterParams, setFilterParams] = useState<FilterParams>({
@@ -75,11 +132,11 @@ export default function OrdersScreen() {
   const activeFiltersCount = getActiveFiltersCount();
   
   // Extract unique values for filter options
-  const extractFilterOptions = (data: OrderItem[], key: keyof OrderItem) => {
+  const extractFilterOptions = (data: Order[], key: keyof Order) => {
     const uniqueValues = new Set<string>();
     data.forEach(item => {
       if (item[key]) {
-        uniqueValues.add(item[key] as string);
+        uniqueValues.add(String(item[key]));
       }
     });
     return Array.from(uniqueValues).map(value => ({
@@ -95,23 +152,29 @@ export default function OrdersScreen() {
     { id: 'high', label: '> $1000' },
   ];
 
-  // Calculate filter options based on the active tab data
-  const allOrders = [...orderData.newOrders, ...orderData.myOrders] as OrderItem[];
-  const activeTabOrders = activeTab === 'new' ? orderData.newOrders : orderData.myOrders;
+  // Map API orders to component format
+  const mappedNewOrders = newOrders.map(mapApiOrderToComponentOrder);
+  const mappedMyOrders = myOrders.map(mapApiOrderToComponentOrder);
   
-  const vehicleTypeOptions = extractFilterOptions(allOrders, 'vehicleType');
-  const productTypeOptions = extractFilterOptions(allOrders, 'productType');
-  const originOptions = extractFilterOptions(allOrders, 'origin');
-  const destinationOptions = extractFilterOptions(allOrders, 'destination');
+  // Calculate filter options based on the active tab data
+  const allOrders = [...newOrders, ...myOrders];
+  const mappedAllOrders = [...mappedNewOrders, ...mappedMyOrders];
+  const activeTabOrders = activeTab === 'new' ? newOrders : myOrders;
+  const mappedActiveTabOrders = activeTab === 'new' ? mappedNewOrders : mappedMyOrders;
+  
+  const vehicleTypeOptions = extractFilterOptions(allOrders, 'vehicle_type');
+  const productTypeOptions = extractFilterOptions(allOrders, 'product_type');
+  const originOptions = extractFilterOptions(allOrders, 'origin_name');
+  const destinationOptions = extractFilterOptions(allOrders, 'destination_name');
   
   // Filter my orders by status when needed
   const getMyOrdersByStatus = (status: string) => {
-    if (status === 'all') return orderData.myOrders;
-    return orderData.myOrders.filter((order: OrderItem) => order.status === status);
+    if (status === 'all') return myOrders;
+    return myOrders.filter((order: Order) => order.status === status);
   };
   
   // Helper function for price range filter
-  const filterByPriceRange = (order: OrderItem, range: string | null) => {
+  const filterByPriceRange = (order: Order, range: string | null) => {
     if (!range) return true;
     
     switch (range) {
@@ -129,49 +192,49 @@ export default function OrdersScreen() {
   // Apply all filters to the orders
   const getFilteredOrders = () => {
     let filteredOrders = activeTab === 'new' 
-      ? orderData.newOrders 
+      ? newOrders 
       : getMyOrdersByStatus(statusFilter);
     
     // Apply search query if present
     if (searchQuery) {
       const query = searchQuery.toLowerCase().trim();
-      filteredOrders = filteredOrders.filter((order: OrderItem) => 
-        order.orderId.toLowerCase().includes(query) ||
-        order.customer.toLowerCase().includes(query) ||
-        order.origin.toLowerCase().includes(query) ||
-        order.destination.toLowerCase().includes(query) ||
-        order.vehicleType.toLowerCase().includes(query) ||
-        order.productType.toLowerCase().includes(query)
+      filteredOrders = filteredOrders.filter((order: Order) => 
+        order.order_id.toLowerCase().includes(query) ||
+        order.customer_name.toLowerCase().includes(query) ||
+        order.origin_name.toLowerCase().includes(query) ||
+        order.destination_name.toLowerCase().includes(query) ||
+        order.vehicle_type.toLowerCase().includes(query) ||
+        order.product_type.toLowerCase().includes(query)
       );
     }
     
     // Apply advanced filters if they are set
     if (filterParams.vehicleType) {
-      filteredOrders = filteredOrders.filter((order: OrderItem) => 
-        order.vehicleType === filterParams.vehicleType
+      filteredOrders = filteredOrders.filter((order: Order) => 
+        order.vehicle_type === filterParams.vehicleType
       );
     }
     
     if (filterParams.productType) {
-      filteredOrders = filteredOrders.filter((order: OrderItem) => 
-        order.productType === filterParams.productType
+      filteredOrders = filteredOrders.filter((order: Order) => 
+        order.product_type === filterParams.productType
       );
     }
     
     if (filterParams.origin) {
-      filteredOrders = filteredOrders.filter((order: OrderItem) => 
-        order.origin === filterParams.origin
+      filteredOrders = filteredOrders.filter((order: Order) => 
+        order.origin_name === filterParams.origin
       );
     }
     
     if (filterParams.destination) {
-      filteredOrders = filteredOrders.filter((order: OrderItem) => 
-        order.destination === filterParams.destination
+      filteredOrders = filteredOrders.filter((order: Order) => 
+        order.destination_name === filterParams.destination
       );
     }
     
     // Apply price range filter
-    filteredOrders = filteredOrders.filter((order: OrderItem) => 
+    filteredOrders = filteredOrders.filter((order: Order) => 
       filterByPriceRange(order, filterParams.priceRange)
     );
     
@@ -187,6 +250,7 @@ export default function OrdersScreen() {
   };
   
   const handleViewOrderDetails = (id: string) => {
+    console.log('Viewing order details for ID:', id);
     router.push({
       pathname: '/order-details',
       params: { id }
@@ -282,6 +346,32 @@ export default function OrdersScreen() {
       return text.length > 17 ? text.substring(0, 14) + '...' : text;
     };
   
+  // Show loading state while fetching orders
+  if (loading) {
+    return (
+      <ThemedView style={[tabStyles.container, styles.loadingContainer]}>
+        <ActivityIndicator size="large" color="#35B468" />
+        <ThemedText style={styles.loadingText}>Loading orders...</ThemedText>
+      </ThemedView>
+    );
+  }
+
+  // Show error state if fetch failed
+  if (error) {
+    return (
+      <ThemedView style={[tabStyles.container, styles.errorContainer]}>
+        <MaterialIcons name="error-outline" size={60} color="#ff6b6b" />
+        <ThemedText style={styles.errorText}>{error}</ThemedText>
+        <TouchableOpacity 
+          style={styles.retryButton}
+          onPress={() => setActiveTab(activeTab)} // This will trigger a re-fetch
+        >
+          <ThemedText style={styles.retryText}>Retry</ThemedText>
+        </TouchableOpacity>
+      </ThemedView>
+    );
+  }
+  
   return (
     <ThemedView style={tabStyles.container}>
       <View style={styles.customHeader}>
@@ -325,14 +415,34 @@ export default function OrdersScreen() {
       {/* Orders List */}
       <FlatList
         data={getFilteredOrders()}
-        renderItem={({ item }) => (
-          <OrderItem
-            {...item}
-            isSelected={selectedOrder === item.id}
-            onSelect={handleOrderSelection}
-            onViewDetails={handleViewOrderDetails}
-          />
-        )}
+        renderItem={({ item }) => {
+          // Map API order to component order format first
+          const mappedOrder = mapApiOrderToComponentOrder(item);
+          
+          return (
+            <OrderItem
+              key={item.id}
+              id={mappedOrder.id}
+              orderId={mappedOrder.orderId}
+              customer={mappedOrder.customer}
+              origin={mappedOrder.origin}
+              destination={mappedOrder.destination}
+              vehicleType={mappedOrder.vehicleType}
+              productType={mappedOrder.productType}
+              weight={mappedOrder.weight}
+              price={mappedOrder.price}
+              status={mappedOrder.status}
+              date={mappedOrder.date}
+              driverName={mappedOrder.driverName}
+              estimatedArrival={mappedOrder.estimatedArrival}
+              deliveredOn={mappedOrder.deliveredOn}
+              reason={mappedOrder.reason}
+              isSelected={selectedOrder === item.id}
+              onSelect={() => handleOrderSelection(item.id)}
+              onViewDetails={() => handleViewOrderDetails(item.id)}
+            />
+          );
+        }}
         keyExtractor={item => item.id}
         contentContainerStyle={styles.listContainer}
         showsVerticalScrollIndicator={false}
@@ -349,6 +459,109 @@ export default function OrdersScreen() {
 }
 
 const styles = StyleSheet.create({
+  tabsRow: {
+    flexDirection: 'row',
+    paddingHorizontal: 15,
+    marginBottom: 10,
+  },
+  tab: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    marginRight: 10,
+  },
+  activeTab: {
+    backgroundColor: '#35B468',
+  },
+  tabText: {
+    fontWeight: '500',
+    fontSize: 14,
+  },
+  activeTabText: {
+    color: '#FFFFFF',
+  },
+  filtersContainer: {
+    padding: 15,
+  },
+  selectedOrderContainer: {
+    backgroundColor: 'rgba(53, 180, 104, 0.1)',
+    borderLeftWidth: 3,
+    borderLeftColor: '#35B468',
+  },
+  badgeContainer: {
+    backgroundColor: '#35B468',
+    borderRadius: 15,
+    width: 20,
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 5,
+  },
+  badgeText: {
+    color: '#FFFFFF',
+    fontSize: 10,
+    fontWeight: '600',
+  },
+  filterButtonsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 15,
+  },
+  statusFiltersContainer: {
+    padding: 15,
+    paddingTop: 5,
+  },
+  emptyStateContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  emptyStateIcon: {
+    marginBottom: 15,
+  },
+  emptyStateText: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  emptyStateSubtext: {
+    fontSize: 14,
+    textAlign: 'center',
+    opacity: 0.7,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  errorText: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginTop: 10,
+    marginBottom: 20,
+    color: '#ff6b6b',
+  },
+  retryButton: {
+    backgroundColor: '#35B468',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+  retryText: {
+    color: '#FFFFFF',
+    fontWeight: '600',
+  },
   customHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -392,10 +605,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: 'bold',
     fontFamily: 'Comfortaa',
-  },
-  statusFiltersContainer: {
-    paddingHorizontal: 20,
-    marginBottom: 16,
   },
   statusFiltersScrollContent: {
     paddingRight: 20,

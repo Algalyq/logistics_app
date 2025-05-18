@@ -5,6 +5,17 @@ export type Language = 'kk' | 'ru' | 'en';
 export type TranslationKeys = {
   // General
   appName: string;
+  loading: string;
+  error: string;
+  success: string;
+  loadingOrderData: string;
+  orderNotFound: string;
+  liveTracking: string;
+  
+  // Order Details
+  orderDetails: string;
+  date: string;
+  total: string;
   
   // Theme Settings
   appearance: string;
@@ -15,6 +26,7 @@ export type TranslationKeys = {
   login: string;
   register: string;
   email: string;
+  username: string;
   password: string;
   confirmPassword: string;
   fullName: string;
@@ -22,6 +34,7 @@ export type TranslationKeys = {
   dontHaveAccount: string;
   alreadyHaveAccount: string;
   enterEmail: string;
+  enterUsername: string;
   enterPassword: string;
   enterFullName: string;
   confirmYourPassword: string;
@@ -30,6 +43,8 @@ export type TranslationKeys = {
   welcomeBack: string;
   createAccount: string;
   getStarted: string;
+  loginFailed: string;
+  pleaseEnterCredentials: string;
 
   // Tab Navigation
   home: string;
@@ -115,7 +130,18 @@ export const translations: Record<Language, TranslationKeys> = {
   // EN translations
   en: {
     // General
-    appName: 'Trackit',
+    appName: 'Logistics',
+    loading: 'Loading...',
+    error: 'Error',
+    success: 'Success',
+    loadingOrderData: 'Loading order data...',
+    orderNotFound: 'Order not found',
+    liveTracking: 'Live Tracking',
+    
+    // Order Details
+    orderDetails: 'Order Details',
+    date: 'Date',
+    total: 'Total',
     
     // Theme Settings
     appearance: 'Appearance',
@@ -126,21 +152,25 @@ export const translations: Record<Language, TranslationKeys> = {
     login: 'Login',
     register: 'Register',
     email: 'Email',
+    username: 'Username',
     password: 'Password',
     confirmPassword: 'Confirm Password',
     fullName: 'Full Name',
     forgotPassword: 'Forgot Password?',
-    dontHaveAccount: 'Don\'t have an account?',
+    dontHaveAccount: "Don't have an account?",
     alreadyHaveAccount: 'Already have an account?',
     enterEmail: 'Enter your email',
+    enterUsername: 'Enter your username',
     enterPassword: 'Enter your password',
     enterFullName: 'Enter your full name',
     confirmYourPassword: 'Confirm your password',
-    signIn: 'SIGN IN',
-    signUp: 'SIGN UP',
+    signIn: 'Sign In',
+    signUp: 'Sign Up',
     welcomeBack: 'Welcome back!',
-    createAccount: 'Create an account',
-    getStarted: 'Get started with the app',
+    createAccount: 'Create an Account',
+    getStarted: 'Get Started',
+    loginFailed: 'Login failed, please check your credentials',
+    pleaseEnterCredentials: 'Please enter your username and password',
     
     // Tab Navigation
     home: 'Home',
@@ -225,7 +255,18 @@ export const translations: Record<Language, TranslationKeys> = {
   // Kazakh translations
   kk: {
     // General
-    appName: 'Trackit',
+    appName: 'Логистика',
+    loading: 'Жүктелу...',
+    error: 'Қате',
+    success: 'Сәтті',
+    loadingOrderData: 'Тапсырыс деректері жүктелуде...',
+    orderNotFound: 'Тапсырыс табылмады',
+    liveTracking: 'Нақты уақыттағы бақылау',
+    
+    // Order Details
+    orderDetails: 'Тапсырыс мәліметтері',
+    date: 'Күні',
+    total: 'Сомасы',
     
     // Theme Settings
     appearance: 'Сыртқы көрініс',
@@ -236,21 +277,25 @@ export const translations: Record<Language, TranslationKeys> = {
     login: 'Кіру',
     register: 'Тіркелу',
     email: 'Электрондық пошта',
+    username: 'Пайдаланушы аты',
     password: 'Құпия сөз',
     confirmPassword: 'Құпия сөзді растаңыз',
-    fullName: 'Толық аты-жөні',
-    forgotPassword: 'Құпия сөзіңізді ұмыттыңыз ба?',
+    fullName: 'Толық аты',
+    forgotPassword: 'Құпия сөзді ұмыттыңыз ба?',
     dontHaveAccount: 'Тіркелгіңіз жоқ па?',
     alreadyHaveAccount: 'Тіркелгіңіз бар ма?',
     enterEmail: 'Электрондық поштаңызды енгізіңіз',
+    enterUsername: 'Пайдаланушы атыңызды енгізіңіз',
     enterPassword: 'Құпия сөзіңізді енгізіңіз',
-    enterFullName: 'Толық аты-жөніңізді енгізіңіз',
-    confirmYourPassword: 'Құпия сөзді растаңыз',
-    signIn: 'КІРУ',
-    signUp: 'ТІРКЕЛУ',
-    welcomeBack: 'Қайта келгеніңізге қуаныштымыз!',
+    enterFullName: 'Толық атыңызды енгізіңіз',
+    confirmYourPassword: 'Құпия сөзіңізді растаңыз',
+    signIn: 'Кіру',
+    signUp: 'Тіркелу',
+    welcomeBack: 'Қайта келгеніңізге қош келдіңіз!',
     createAccount: 'Тіркелгі жасау',
-    getStarted: 'Қосымша жұмысын бастау үшін тіркеліңіз',
+    getStarted: 'Қолданбаны пайдалануды бастаңыз',
+    loginFailed: 'Кіру қатесі, тіркелгі деректеріңізді тексеріңіз',
+    pleaseEnterCredentials: 'Пайдаланушы атыңыз бен құпия сөзіңізді енгізіңіз',
     
     // Tab Navigation
     home: 'Басты',
@@ -335,7 +380,18 @@ export const translations: Record<Language, TranslationKeys> = {
   // Russian translations
   ru: {
     // General
-    appName: 'Trackit',
+    appName: 'Логистика',
+    loading: 'Загрузка...',
+    error: 'Ошибка',
+    success: 'Успех',
+    loadingOrderData: 'Загрузка данных заказа...',
+    orderNotFound: 'Заказ не найден',
+    liveTracking: 'Отслеживание в реальном времени',
+    
+    // Order Details
+    orderDetails: 'Детали заказа',
+    date: 'Дата',
+    total: 'Итого',
     
     // Theme Settings
     appearance: 'Внешний вид',
@@ -346,6 +402,7 @@ export const translations: Record<Language, TranslationKeys> = {
     login: 'Вход',
     register: 'Регистрация',
     email: 'Электронная почта',
+    username: 'Имя пользователя',
     password: 'Пароль',
     confirmPassword: 'Подтвердите пароль',
     fullName: 'Полное имя',
@@ -353,14 +410,17 @@ export const translations: Record<Language, TranslationKeys> = {
     dontHaveAccount: 'Нет аккаунта?',
     alreadyHaveAccount: 'Уже есть аккаунт?',
     enterEmail: 'Введите вашу почту',
+    enterUsername: 'Введите имя пользователя',
     enterPassword: 'Введите ваш пароль',
     enterFullName: 'Введите ваше полное имя',
     confirmYourPassword: 'Подтвердите ваш пароль',
-    signIn: 'ВОЙТИ',
-    signUp: 'ЗАРЕГИСТРИРОВАТЬСЯ',
-    welcomeBack: 'Добро пожаловать!',
-    createAccount: 'Создать аккаунт',
-    getStarted: 'Зарегистрируйтесь, чтобы начать работу с приложением',
+    signIn: 'Войти',
+    signUp: 'Зарегистрироваться',
+    welcomeBack: 'С возвращением!',
+    createAccount: 'Создайте аккаунт',
+    getStarted: 'Начните работу с приложением',
+    loginFailed: 'Ошибка входа, проверьте ваши учетные данные',
+    pleaseEnterCredentials: 'Пожалуйста, введите имя пользователя и пароль',
     
     // Tab Navigation
     home: 'Главная',
