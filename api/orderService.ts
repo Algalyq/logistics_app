@@ -1,6 +1,14 @@
 import apiClient from './client';
 import { ORDER_ENDPOINTS } from './config';
 
+// API response interface
+export interface ApiResponse<T> {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: T[];
+}
+
 // Interface for order data
 export interface Order {
   id: string;
@@ -53,18 +61,18 @@ export interface OrderDetail extends Omit<Order, 'origin_name' | 'destination_na
 // OrderService class to interact with the orders API
 class OrderService {
   // Get all orders (handled differently based on user role)
-  public async getOrders(): Promise<Order[]> {
-    return apiClient.get<Order[]>(ORDER_ENDPOINTS.orders);
+  public async getOrders(): Promise<ApiResponse<Order>> {
+    return apiClient.get<ApiResponse<Order>>(ORDER_ENDPOINTS.orders);
   }
   
   // Get new orders (available for drivers to accept)
-  public async getNewOrders(): Promise<Order[]> {
-    return apiClient.get<Order[]>(ORDER_ENDPOINTS.newOrders);
+  public async getNewOrders(): Promise<ApiResponse<Order>> {
+    return apiClient.get<ApiResponse<Order>>(ORDER_ENDPOINTS.newOrders);
   }
   
   // Get my orders (orders assigned to the current user)
-  public async getMyOrders(): Promise<Order[]> {
-    return apiClient.get<Order[]>(ORDER_ENDPOINTS.myOrders);
+  public async getMyOrders(): Promise<ApiResponse<Order>> {
+    return apiClient.get<ApiResponse<Order>>(ORDER_ENDPOINTS.myOrders);
   }
   
   // Get order details by ID

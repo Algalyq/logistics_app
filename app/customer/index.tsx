@@ -1,0 +1,210 @@
+import React, { useState } from 'react';
+import { View, ScrollView, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { useRouter } from 'expo-router';
+import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
+import { tabStyles } from '@/assets/styles/tabStyles';
+import { COLORS } from '@/assets/styles/authStyles';
+import { useTranslation } from '@/translations/useTranslation';
+import { TabHeader } from '@/components/tabs/TabHeader';
+import { Card } from '@/components/tabs/Card';
+import { SectionHeader } from '@/components/tabs/SectionHeader';
+
+// Dummy data for the dashboard
+const dashboardData = {
+  totalOrders: 124,
+  completedOrders: 98,
+  pendingOrders: 26,
+  totalProfit: 15420,
+  weeklyProfit: 4250,
+  monthlyProfit: 15420,
+};
+
+export default function CustomerHomeScreen() {
+  const router = useRouter();
+  const { t } = useTranslation();
+  const [selectedPeriod, setSelectedPeriod] = useState('month');
+  
+  // Calculate completion percentage
+  const completionPercentage = Math.round(
+    (dashboardData.completedOrders / dashboardData.totalOrders) * 100
+  );
+  
+  // Get profit based on selected period
+  const getProfitByPeriod = () => {
+    switch (selectedPeriod) {
+      case 'week':
+        return dashboardData.weeklyProfit;
+      case 'month':
+        return dashboardData.monthlyProfit;
+      default:
+        return dashboardData.totalProfit;
+    }
+  };
+  
+  const navigateToAnalysis = () => {
+    router.push('./analysis');
+  };
+  
+  const navigateToOrders = () => {
+    router.push('./orders');
+  };
+
+  return (
+    <ThemedView style={tabStyles.container}>
+      {/* Header with profile */}
+      <TabHeader showProfile={true} />
+      
+      <ScrollView style={tabStyles.scrollView} showsVerticalScrollIndicator={false}>
+        {/* Dashboard Summary */}
+        <ThemedView style={tabStyles.section}>
+          <ThemedText style={tabStyles.sectionTitle}>{t('dashboard')}</ThemedText>
+          
+          {/* Order Completion Card */}
+          <Card 
+            title={t('orderCompletionRate')}
+            onPress={navigateToAnalysis}
+          >
+
+            <View style={styles.completionContainer}>
+              <View style={styles.percentageCircle}>
+                <ThemedText style={styles.percentageText}>{completionPercentage}%</ThemedText>
+              </View>
+              <View style={styles.statsContainer}>
+                <View style={styles.statItem}>
+                  <ThemedText style={styles.statLabel}>{t('totalOrders')}</ThemedText>
+                  <ThemedText style={styles.statValue}>{dashboardData.totalOrders}</ThemedText>
+                </View>
+                <View style={styles.statItem}>
+                  <ThemedText style={styles.statLabel}>{t('completed')}</ThemedText>
+                  <ThemedText style={styles.statValue}>{dashboardData.completedOrders}</ThemedText>
+                </View>
+                <View style={styles.statItem}>
+                  <ThemedText style={styles.statLabel}>{t('pending')}</ThemedText>
+                  <ThemedText style={styles.statValue}>{dashboardData.pendingOrders}</ThemedText>
+                </View>
+              </View>
+            </View>
+          </Card>
+          
+          {/* Profit Card */}
+          <Card
+            title={t('profitOverview')}
+            onPress={navigateToAnalysis}
+            headerRight={
+              <ThemedView style={styles.periodSelector}>
+                <TouchableOpacity 
+                  style={[styles.periodButton, selectedPeriod === 'week' && styles.activePeriod]}
+                  onPress={() => setSelectedPeriod('week')}
+                >
+                  <ThemedText style={[styles.periodText, selectedPeriod === 'week' && styles.activePeriodText]}>{t('week')}</ThemedText>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  style={[styles.periodButton, selectedPeriod === 'month' && styles.activePeriod]}
+                  onPress={() => setSelectedPeriod('month')}
+                >
+                  <ThemedText style={[styles.periodText, selectedPeriod === 'month' && styles.activePeriodText]}>{t('month')}</ThemedText>
+                </TouchableOpacity>
+              </ThemedView>
+            }
+          >
+            <ThemedView style={styles.profitContainer}>
+              <ThemedText style={styles.currency}>$</ThemedText>
+              <ThemedText style={styles.profitAmount}>{getProfitByPeriod().toLocaleString()}</ThemedText>
+            </ThemedView>
+          </Card>
+        </ThemedView>
+        
+        {/* Recent Orders Section */}
+        <ThemedView style={tabStyles.section}>
+          <SectionHeader 
+            title={t('recentOrders')} 
+            actionText={t('viewAll')} 
+            onActionPress={navigateToOrders} 
+          />
+          
+          {/* You can add the list of recent orders here */}
+          <ThemedText style={tabStyles.emptyText}>{t('noRecentOrders')}</ThemedText>
+        </ThemedView>
+      </ScrollView>
+    </ThemedView>
+  );
+}
+
+const styles = StyleSheet.create({
+  completionContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  percentageCircle: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: '#2E7D32', // Hardcoded primary green color
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  percentageText: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#FBFBFB', // Light text on dark background
+  },
+  statsContainer: {
+    flex: 1,
+    marginLeft: 16,
+  },
+  statItem: {
+    marginBottom: 8,
+  },
+  statLabel: {
+    fontSize: 12,
+    color: '#777777', // Will be handled by ThemedText
+    marginBottom: 2,
+  },
+  statValue: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#282828', // Will be handled by ThemedText
+  },
+  periodSelector: {
+    flexDirection: 'row',
+    borderRadius: 8,
+    backgroundColor: '#F5F7FA', // Light background for the selector
+    overflow: 'hidden',
+    alignSelf: 'flex-end',
+  },
+  periodButton: {
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    backgroundColor: '#F5F7FA', // Always light background for inactive buttons
+  },
+  activePeriod: {
+    backgroundColor: '#2E7D32', // Hardcoded primary green color for active state
+  },
+  periodText: {
+    fontSize: 12,
+    color: '#777777', // Gray text for inactive state
+  },
+  activePeriodText: {
+    color: '#FBFBFB', // White text on primary color background
+    fontWeight: '600',
+  },
+  profitContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: 16,
+  },
+  currency: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#2E7D32', // Hardcoded primary green color
+    marginRight: 4,
+  },
+  profitAmount: {
+    fontSize: 32,
+    fontWeight: '700',
+    color: '#282828', // Will be handled by ThemedText
+  },
+});

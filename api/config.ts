@@ -1,5 +1,5 @@
 // API configuration
-export const API_URL = 'http://localhost:8000';
+export const API_URL = 'http://172.20.6.156:8000';
 
 // Auth endpoints
 export const AUTH_ENDPOINTS = {

@@ -9,15 +9,23 @@ interface LoginData {
 
 interface AuthResponse {
   token: string;
+  user_id: number;
+  username: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  role: 'customer' | 'driver' | 'admin';
 }
 
 // ApiClient class to handle API requests
 class ApiClient {
   private token: string | null = null;
+  private userData: Omit<AuthResponse, 'token'> | null = null;
   
   constructor() {
-    // Load token from storage on initialization
+    // Load token and user data from storage on initialization
     this.loadToken();
+    this.loadUserData();
   }
   
   // Load token from AsyncStorage
@@ -28,7 +36,19 @@ class ApiClient {
         this.token = token;
       }
     } catch (error) {
-      console.error('Error loading token from storage:', error);
+      console.error('Failed to load auth token', error);
+    }
+  }
+  
+  // Load user data from AsyncStorage
+  private async loadUserData() {
+    try {
+      const userData = await AsyncStorage.getItem('user_data');
+      if (userData) {
+        this.userData = JSON.parse(userData);
+      }
+    } catch (error) {
+      console.error('Failed to load user data', error);
     }
   }
   
@@ -37,7 +57,16 @@ class ApiClient {
     try {
       await AsyncStorage.setItem('auth_token', token);
     } catch (error) {
-      console.error('Error saving token to storage:', error);
+      console.error('Failed to save auth token', error);
+    }
+  }
+  
+  // Save user data to AsyncStorage
+  private async saveUserData(userData: Omit<AuthResponse, 'token'>) {
+    try {
+      await AsyncStorage.setItem('user_data', JSON.stringify(userData));
+    } catch (error) {
+      console.error('Failed to save user data', error);
     }
   }
   
@@ -47,13 +76,36 @@ class ApiClient {
     this.saveToken(token);
   }
   
-  // Remove token (logout)
-  public async clearToken() {
+  // Set user data
+  public setUserData(userData: Omit<AuthResponse, 'token'>) {
+    this.userData = userData;
+    this.saveUserData(userData);
+  }
+  
+  // Get user data
+  public getUserData() {
+    return this.userData;
+  }
+  
+  // Get user role
+  public getUserRole() {
+    return this.userData?.role || null;
+  }
+  
+  // Get auth token
+  public getToken(): string | null {
+    return this.token;
+  }
+  
+  // Remove token and user data (logout)
+  public async clearAuth() {
     this.token = null;
+    this.userData = null;
     try {
       await AsyncStorage.removeItem('auth_token');
+      await AsyncStorage.removeItem('user_data');
     } catch (error) {
-      console.error('Error removing token from storage:', error);
+      console.error('Failed to clear auth data', error);
     }
   }
   
@@ -79,6 +131,10 @@ class ApiClient {
     
     const data = await response.json();
     this.setToken(data.token);
+    
+    // Save user data without token
+    const { token, ...userData } = data;
+    this.setUserData(userData);
     return data;
   }
   

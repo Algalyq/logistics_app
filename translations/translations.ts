@@ -8,6 +8,7 @@ export type TranslationKeys = {
   loading: string;
   error: string;
   success: string;
+  info: string;
   loadingOrderData: string;
   orderNotFound: string;
   liveTracking: string;
@@ -16,6 +17,11 @@ export type TranslationKeys = {
   orderDetails: string;
   date: string;
   total: string;
+  status: string;
+  orderId: string;
+  locations: string;
+  actions: string;
+  markAsCompleted: string;
   
   // Theme Settings
   appearance: string;
@@ -124,6 +130,43 @@ export type TranslationKeys = {
   cancel: string;
   save: string;
   accept: string;
+  
+  // Driver-specific
+  driverDashboard: string;
+  activeOrders: string;
+  rating: string;
+  quickAccess: string;
+  myDocuments: string;
+  myProfile: string;
+  myTruck: string;
+  experience: string;
+  years: string;
+  totalDistance: string;
+  assignedTruck: string;
+  availableOrders: string;
+  documents: string;
+  
+  // Document Management
+  driversLicense: string;
+  idCard: string;
+  vehicleRegistration: string;
+  insurance: string;
+  uploadAndManageDocuments: string;
+  verified: string;
+  rejected: string;
+  pendingReview: string;
+  updateDocument: string;
+  uploadDocument: string;
+  viewDocument: string;
+  documentViewerWouldOpenHere: string;
+  note: string;
+  documentsMustBeClearAndValid: string;
+  verificationMayTakeTime: string;
+  failedToLoadDocuments: string;
+  failedToUploadDocument: string;
+  documentUploadedSuccessfully: string;
+  pdfPreviewNotAvailable: string;
+  openInExternalApp: string;
 };
 
 export const translations: Record<Language, TranslationKeys> = {
@@ -134,6 +177,7 @@ export const translations: Record<Language, TranslationKeys> = {
     loading: 'Loading...',
     error: 'Error',
     success: 'Success',
+    info: 'Information',
     loadingOrderData: 'Loading order data...',
     orderNotFound: 'Order not found',
     liveTracking: 'Live Tracking',
@@ -142,6 +186,11 @@ export const translations: Record<Language, TranslationKeys> = {
     orderDetails: 'Order Details',
     date: 'Date',
     total: 'Total',
+    status: 'Status',
+    orderId: 'Order ID',
+    locations: 'Locations',
+    actions: 'Actions',
+    markAsCompleted: 'Mark as Completed',
     
     // Theme Settings
     appearance: 'Appearance',
@@ -250,23 +299,234 @@ export const translations: Record<Language, TranslationKeys> = {
     cancel: 'Cancel',
     save: 'Save',
     accept: 'Accept',
+    
+    // Driver-specific
+    driverDashboard: 'Driver Dashboard',
+    activeOrders: 'Active Orders',
+    rating: 'Rating',
+    quickAccess: 'Quick Access',
+    myDocuments: 'My Documents',
+    myProfile: 'My Profile',
+    myTruck: 'My Truck',
+    experience: 'Experience',
+    years: 'years',
+    totalDistance: 'Total Distance',
+    assignedTruck: 'Assigned Truck',
+    availableOrders: 'Available Orders',
+    documents: 'Documents',
+    
+    // Document Management
+    driversLicense: 'Driver\'s License',
+    idCard: 'ID Card',
+    vehicleRegistration: 'Vehicle Registration',
+    insurance: 'Insurance',
+    uploadAndManageDocuments: 'Upload and Manage Documents',
+    verified: 'Verified',
+    rejected: 'Rejected',
+    pendingReview: 'Pending Review',
+    updateDocument: 'Update Document',
+    uploadDocument: 'Upload Document',
+    viewDocument: 'View Document',
+    documentViewerWouldOpenHere: 'Document viewer would open here',
+    note: 'Note',
+    documentsMustBeClearAndValid: 'Documents must be clear and valid',
+    verificationMayTakeTime: 'Verification may take 24-48 hours',
+    failedToLoadDocuments: 'Failed to load documents',
+    failedToUploadDocument: 'Failed to upload document',
+    documentUploadedSuccessfully: 'Document uploaded successfully',
+    pdfPreviewNotAvailable: 'PDF preview is not available in the app',
+    openInExternalApp: 'Open in external app'
+  },
+  
+  // Russian translations
+  ru: {
+    // General
+    appName: 'Логистика',
+    loading: 'Загрузка...',
+    error: 'Ошибка',
+    success: 'Успешно',
+    info: 'Информация',
+    loadingOrderData: 'Загрузка данных заказа...',
+    orderNotFound: 'Заказ не найден',
+    liveTracking: 'Отслеживание',
+    
+    // Order Details
+    orderDetails: 'Детали заказа',
+    date: 'Дата',
+    total: 'Сумма',
+    status: 'Статус',
+    orderId: 'Номер заказа',
+    locations: 'Локации',
+    actions: 'Действия',
+    markAsCompleted: 'Отметить как выполненный',
+    
+    // Theme Settings
+    appearance: 'Внешний вид',
+    themeMode: 'Режим темы',
+    themeColor: 'Цвет темы',
+    
+    // Auth Screens
+    login: 'Вход',
+    register: 'Регистрация',
+    email: 'Электронная почта',
+    username: 'Имя пользователя',
+    password: 'Пароль',
+    confirmPassword: 'Подтвердите пароль',
+    fullName: 'Полное имя',
+    forgotPassword: 'Забыли пароль?',
+    dontHaveAccount: 'Нет аккаунта?',
+    alreadyHaveAccount: 'Уже есть аккаунт?',
+    enterEmail: 'Введите вашу электронную почту',
+    enterUsername: 'Введите ваше имя пользователя',
+    enterPassword: 'Введите ваш пароль',
+    enterFullName: 'Введите ваше полное имя',
+    confirmYourPassword: 'Подтвердите ваш пароль',
+    signIn: 'Войти',
+    signUp: 'Зарегистрироваться',
+    welcomeBack: 'С возвращением!',
+    createAccount: 'Создать аккаунт',
+    getStarted: 'Начать',
+    loginFailed: 'Ошибка входа, проверьте ваши данные',
+    pleaseEnterCredentials: 'Пожалуйста, введите имя пользователя и пароль',
+    
+    // Tab Navigation
+    home: 'Главная',
+    analysis: 'Аналитика',
+    orders: 'Заказы',
+    profile: 'Профиль',
+    
+    // Home Tab
+    dashboard: 'Панель управления',
+    orderCompletionRate: 'Процент выполнения заказов',
+    profitOverview: 'Обзор прибыли',
+    totalOrders: 'Всего заказов',
+    completed: 'Выполнено',
+    pending: 'В ожидании',
+    week: 'Неделя',
+    month: 'Месяц',
+    recentOrders: 'Недавние заказы',
+    viewAll: 'Смотреть все',
+    noRecentOrders: 'Нет недавних заказов для отображения',
+    
+    // Analysis Tab
+    logisticsAnalytics: 'Аналитика логистики',
+    orderStatistics: 'Статистика заказов',
+    today: 'Сегодня',
+    thisWeek: 'Эта неделя',
+    thisMonth: 'Этот месяц',
+    averageOrderValue: 'Средняя стоимость заказа',
+    topVehicleTypes: 'Популярные типы транспорта',
+    topProducts: 'Популярные продукты',
+    orderTrends: 'Тенденции заказов',
+    
+    // Orders Tab
+    newOrders: 'Новые заказы',
+    myOrders: 'Мои заказы',
+    all: 'Все',
+    inProgress: 'В процессе',
+    cancelled: 'Отменено',
+    customer: 'Клиент',
+    origin: 'Откуда',
+    destination: 'Куда',
+    vehicle: 'Транспорт',
+    product: 'Продукт',
+    weight: 'Вес',
+    price: 'Цена',
+    driver: 'Водитель',
+    eta: 'Ожидаемое время прибытия',
+    deliveredOn: 'Доставлено',
+    reason: 'Причина',
+    trackOrder: 'Отследить заказ',
+    acceptOrder: 'Принять заказ',
+    viewDetails: 'Просмотреть детали',
+    reject: 'Отклонить',
+    noOrdersFound: 'Заказы не найдены',
+    noNewOrders: 'Нет новых заказов',
+    
+    // Filter Options
+    showFilters: 'Показать фильтры',
+    hideFilters: 'Скрыть фильтры',
+    vehicleType: 'Тип транспорта',
+    productType: 'Тип продукта',
+    priceRange: 'Диапазон цен',
+    
+    // Profile Page
+    personalInfo: 'Личная информация',
+    phone: 'Телефон',
+    company: 'Компания',
+    language: 'Язык',
+    selectLanguage: 'Выбрать язык',
+    settings: 'Настройки',
+    notifications: 'Уведомления',
+    security: 'Безопасность',
+    help: 'Помощь',
+    logout: 'Выйти',
+    
+    // Button Actions
+    continue: 'Продолжить',
+    cancel: 'Отмена',
+    save: 'Сохранить',
+    accept: 'Принять',
+    
+    // Driver-specific
+    driverDashboard: 'Панель водителя',
+    activeOrders: 'Активные заказы',
+    rating: 'Рейтинг',
+    quickAccess: 'Быстрый доступ',
+    myDocuments: 'Мои документы',
+    myProfile: 'Мой профиль',
+    myTruck: 'Мой грузовик',
+    experience: 'Опыт',
+    years: 'лет',
+    totalDistance: 'Общее расстояние',
+    assignedTruck: 'Назначенный грузовик',
+    availableOrders: 'Доступные заказы',
+    documents: 'Документы',
+    
+    // Document Management
+    driversLicense: 'Водительское удостоверение',
+    idCard: 'Удостоверение личности',
+    vehicleRegistration: 'Регистрация ТС',
+    insurance: 'Страховка',
+    uploadAndManageDocuments: 'Загрузка и управление документами',
+    verified: 'Проверено',
+    rejected: 'Отклонено',
+    pendingReview: 'На рассмотрении',
+    updateDocument: 'Обновить документ',
+    uploadDocument: 'Загрузить документ',
+    viewDocument: 'Просмотреть документ',
+    documentViewerWouldOpenHere: 'Здесь откроется просмотр документов',
+    note: 'Примечание',
+    documentsMustBeClearAndValid: 'Документы должны быть четкими и действительными',
+    verificationMayTakeTime: 'Проверка может занять 24-48 часов',
+    failedToLoadDocuments: 'Не удалось загрузить документы',
+    failedToUploadDocument: 'Не удалось загрузить документ',
+    documentUploadedSuccessfully: 'Документ успешно загружен',
+    pdfPreviewNotAvailable: 'Предпросмотр PDF недоступен в приложении',
+    openInExternalApp: 'Открыть во внешнем приложении'
   },
   
   // Kazakh translations
   kk: {
     // General
-    appName: 'Логистика',
-    loading: 'Жүктелу...',
+    appName: 'Algalyq',
+    loading: 'Жүктелуде...',
     error: 'Қате',
     success: 'Сәтті',
+    info: 'Ақпарат',
     loadingOrderData: 'Тапсырыс деректері жүктелуде...',
     orderNotFound: 'Тапсырыс табылмады',
-    liveTracking: 'Нақты уақыттағы бақылау',
+    liveTracking: 'Тірі бақылау',
     
     // Order Details
     orderDetails: 'Тапсырыс мәліметтері',
     date: 'Күні',
     total: 'Сомасы',
+    status: 'Күйі',
+    orderId: 'Тапсырыс нөмірі',
+    locations: 'Орналасқан жерлер',
+    actions: 'Әрекеттер',
+    markAsCompleted: 'Аяқталды деп белгілеу',
     
     // Theme Settings
     appearance: 'Сыртқы көрініс',
@@ -293,19 +553,19 @@ export const translations: Record<Language, TranslationKeys> = {
     signUp: 'Тіркелу',
     welcomeBack: 'Қайта келгеніңізге қош келдіңіз!',
     createAccount: 'Тіркелгі жасау',
-    getStarted: 'Қолданбаны пайдалануды бастаңыз',
-    loginFailed: 'Кіру қатесі, тіркелгі деректеріңізді тексеріңіз',
+    getStarted: 'Бастау',
+    loginFailed: 'Кіру сәтсіз аяқталды, деректеріңізді тексеріңіз',
     pleaseEnterCredentials: 'Пайдаланушы атыңыз бен құпия сөзіңізді енгізіңіз',
     
     // Tab Navigation
-    home: 'Басты',
+    home: 'Басты бет',
     analysis: 'Талдау',
     orders: 'Тапсырыстар',
     profile: 'Профиль',
     
     // Home Tab
     dashboard: 'Басқару тақтасы',
-    orderCompletionRate: 'Тапсырыс орындалу көрсеткіші',
+    orderCompletionRate: 'Тапсырыс аяқталу көрсеткіші',
     profitOverview: 'Пайда шолуы',
     totalOrders: 'Барлық тапсырыстар',
     completed: 'Аяқталған',
@@ -317,36 +577,36 @@ export const translations: Record<Language, TranslationKeys> = {
     noRecentOrders: 'Көрсетілетін соңғы тапсырыстар жоқ',
     
     // Analysis Tab
-    logisticsAnalytics: 'Логистикалық талдау',
+    logisticsAnalytics: 'Логистика аналитикасы',
     orderStatistics: 'Тапсырыс статистикасы',
     today: 'Бүгін',
     thisWeek: 'Осы апта',
     thisMonth: 'Осы ай',
     averageOrderValue: 'Орташа тапсырыс құны',
-    topVehicleTypes: 'Үздік көлік түрлері',
-    topProducts: 'Үздік өнімдер',
-    orderTrends: 'Тапсырыс трендтері',
+    topVehicleTypes: 'Танымал көлік түрлері',
+    topProducts: 'Танымал өнімдер',
+    orderTrends: 'Тапсырыс тенденциялары',
     
     // Orders Tab
     newOrders: 'Жаңа тапсырыстар',
     myOrders: 'Менің тапсырыстарым',
     all: 'Барлығы',
-    inProgress: 'Процесте',
+    inProgress: 'Орындалуда',
     cancelled: 'Бас тартылған',
     customer: 'Тұтынушы',
-    origin: 'Шығу орны',
-    destination: 'Баратын жер',
+    origin: 'Қайдан',
+    destination: 'Қайда',
     vehicle: 'Көлік',
     product: 'Өнім',
     weight: 'Салмақ',
     price: 'Баға',
     driver: 'Жүргізуші',
-    eta: 'Болжалды келу уақыты',
-    deliveredOn: 'Жеткізілу күні',
+    eta: 'Күтілетін келу уақыты',
+    deliveredOn: 'Жеткізілген күні',
     reason: 'Себеп',
     trackOrder: 'Тапсырысты бақылау',
     acceptOrder: 'Тапсырысты қабылдау',
-    viewDetails: 'Толығырақ көру',
+    viewDetails: 'Мәліметтерді көру',
     reject: 'Бас тарту',
     noOrdersFound: 'Тапсырыстар табылмады',
     noNewOrders: 'Жаңа тапсырыстар жоқ',
@@ -356,14 +616,14 @@ export const translations: Record<Language, TranslationKeys> = {
     hideFilters: 'Сүзгілерді жасыру',
     vehicleType: 'Көлік түрі',
     productType: 'Өнім түрі',
-    priceRange: 'Баға диапазоны',
+    priceRange: 'Баға ауқымы',
     
     // Profile Page
     personalInfo: 'Жеке ақпарат',
     phone: 'Телефон',
     company: 'Компания',
     language: 'Тіл',
-    selectLanguage: 'Тілді таңдаңыз',
+    selectLanguage: 'Тілді таңдау',
     settings: 'Параметрлер',
     notifications: 'Хабарландырулар',
     security: 'Қауіпсіздік',
@@ -375,130 +635,42 @@ export const translations: Record<Language, TranslationKeys> = {
     cancel: 'Бас тарту',
     save: 'Сақтау',
     accept: 'Қабылдау',
-  },
-  
-  // Russian translations
-  ru: {
-    // General
-    appName: 'Логистика',
-    loading: 'Загрузка...',
-    error: 'Ошибка',
-    success: 'Успех',
-    loadingOrderData: 'Загрузка данных заказа...',
-    orderNotFound: 'Заказ не найден',
-    liveTracking: 'Отслеживание в реальном времени',
     
-    // Order Details
-    orderDetails: 'Детали заказа',
-    date: 'Дата',
-    total: 'Итого',
+    // Driver-specific
+    driverDashboard: 'Жүргізуші тақтасы',
+    activeOrders: 'Белсенді тапсырыстар',
+    rating: 'Рейтинг',
+    quickAccess: 'Жылдам кіру',
+    myDocuments: 'Менің құжаттарым',
+    myProfile: 'Менің профилім',
+    myTruck: 'Менің көлігім',
+    experience: 'Тәжірибе',
+    years: 'жыл',
+    totalDistance: 'Жалпы қашықтық',
+    assignedTruck: 'Тағайындалған көлік',
+    availableOrders: 'Қолжетімді тапсырыстар',
+    documents: 'Құжаттар',
     
-    // Theme Settings
-    appearance: 'Внешний вид',
-    themeMode: 'Режим темы',
-    themeColor: 'Цвет темы',
-    
-    // Auth Screens
-    login: 'Вход',
-    register: 'Регистрация',
-    email: 'Электронная почта',
-    username: 'Имя пользователя',
-    password: 'Пароль',
-    confirmPassword: 'Подтвердите пароль',
-    fullName: 'Полное имя',
-    forgotPassword: 'Забыли пароль?',
-    dontHaveAccount: 'Нет аккаунта?',
-    alreadyHaveAccount: 'Уже есть аккаунт?',
-    enterEmail: 'Введите вашу почту',
-    enterUsername: 'Введите имя пользователя',
-    enterPassword: 'Введите ваш пароль',
-    enterFullName: 'Введите ваше полное имя',
-    confirmYourPassword: 'Подтвердите ваш пароль',
-    signIn: 'Войти',
-    signUp: 'Зарегистрироваться',
-    welcomeBack: 'С возвращением!',
-    createAccount: 'Создайте аккаунт',
-    getStarted: 'Начните работу с приложением',
-    loginFailed: 'Ошибка входа, проверьте ваши учетные данные',
-    pleaseEnterCredentials: 'Пожалуйста, введите имя пользователя и пароль',
-    
-    // Tab Navigation
-    home: 'Главная',
-    analysis: 'Анализ',
-    orders: 'Заказы',
-    profile: 'Профиль',
-    
-    // Home Tab
-    dashboard: 'Панель управления',
-    orderCompletionRate: 'Процент выполнения заказов',
-    profitOverview: 'Обзор прибыли',
-    totalOrders: 'Всего заказов',
-    completed: 'Выполнено',
-    pending: 'В ожидании',
-    week: 'Неделя',
-    month: 'Месяц',
-    recentOrders: 'Недавние заказы',
-    viewAll: 'Смотреть все',
-    noRecentOrders: 'Нет недавних заказов для отображения',
-    
-    // Analysis Tab
-    logisticsAnalytics: 'Аналитика логистики',
-    orderStatistics: 'Статистика заказов',
-    today: 'Сегодня',
-    thisWeek: 'На этой неделе',
-    thisMonth: 'В этом месяце',
-    averageOrderValue: 'Средняя стоимость заказа',
-    topVehicleTypes: 'Популярные типы транспорта',
-    topProducts: 'Популярные товары',
-    orderTrends: 'Тенденции заказов',
-    
-    // Orders Tab
-    newOrders: 'Новые заказы',
-    myOrders: 'Мои заказы',
-    all: 'Все',
-    inProgress: 'В процессе',
-    cancelled: 'Отменены',
-    customer: 'Клиент',
-    origin: 'Откуда',
-    destination: 'Куда',
-    vehicle: 'Транспорт',
-    product: 'Товар',
-    weight: 'Вес',
-    price: 'Цена',
-    driver: 'Водитель',
-    eta: 'Ожидаемое прибытие',
-    deliveredOn: 'Доставлено',
-    reason: 'Причина',
-    trackOrder: 'Отследить заказ',
-    acceptOrder: 'Принять заказ',
-    viewDetails: 'Подробнее',
-    reject: 'Отклонить',
-    noOrdersFound: 'Заказы не найдены',
-    noNewOrders: 'Нет новых заказов',
-    
-    // Filter Options
-    showFilters: 'Показать фильтры',
-    hideFilters: 'Скрыть фильтры',
-    vehicleType: 'Тип транспорта',
-    productType: 'Тип продукта',
-    priceRange: 'Ценовой диапазон',
-    
-    // Profile Page
-    personalInfo: 'Личная информация',
-    phone: 'Телефон',
-    company: 'Компания',
-    language: 'Язык',
-    selectLanguage: 'Выберите язык',
-    settings: 'Настройки',
-    notifications: 'Уведомления',
-    security: 'Безопасность',
-    help: 'Помощь',
-    logout: 'Выйти',
-    
-    // Button Actions
-    continue: 'Продолжить',
-    cancel: 'Отмена',
-    save: 'Сохранить',
-    accept: 'Принять',
+    // Document Management
+    driversLicense: 'Жүргізуші куәлігі',
+    idCard: 'Жеке куәлік',
+    vehicleRegistration: 'Көлік тіркеуі',
+    insurance: 'Сақтандыру',
+    uploadAndManageDocuments: 'Құжаттарды жүктеу және басқару',
+    verified: 'Тексерілген',
+    rejected: 'Қабылданбады',
+    pendingReview: 'Қарастырылуда',
+    updateDocument: 'Құжатты жаңарту',
+    uploadDocument: 'Құжатты жүктеу',
+    viewDocument: 'Құжатты қарау',
+    documentViewerWouldOpenHere: 'Құжат қарау құралы осында ашылады',
+    note: 'Ескертпе',
+    documentsMustBeClearAndValid: 'Құжаттар анық және жарамды болуы керек',
+    verificationMayTakeTime: 'Тексеру 24-48 сағат алуы мүмкін',
+    failedToLoadDocuments: 'Құжаттарды жүктеу сәтсіз аяқталды',
+    failedToUploadDocument: 'Құжатты жүктеу сәтсіз аяқталды',
+    documentUploadedSuccessfully: 'Құжат сәтті жүктелді',
+    pdfPreviewNotAvailable: 'PDF алдын-ала қарау қолданбада қол жетімді емес',
+    openInExternalApp: 'Сыртқы қолданбада ашу'
   }
 };

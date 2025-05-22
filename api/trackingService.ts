@@ -1,5 +1,5 @@
 import apiClient from './client';
-import { API_URL } from './config';
+import { API_URL, ORDER_ENDPOINTS } from './config';
 
 // Location types for GPS coordinates (latitude, longitude)
 export type GeoLocation = {
@@ -23,12 +23,12 @@ export interface DeliveryTracking {
 class TrackingService {
   // Get the latest tracking data for an order
   public async getOrderTracking(orderId: number): Promise<DeliveryTracking> {
-    return apiClient.get<DeliveryTracking>(`/api/tracking/${orderId}/`);
+    return apiClient.get<DeliveryTracking>(ORDER_ENDPOINTS.orderTracking(orderId.toString()));
   }
 
   // Update tracking data for an order
   public async updateTracking(trackingId: number, data: Partial<DeliveryTracking>): Promise<DeliveryTracking> {
-    return apiClient.put<DeliveryTracking>(`/api/tracking/${trackingId}/`, data);
+    return apiClient.put<DeliveryTracking>(ORDER_ENDPOINTS.orderTracking(trackingId.toString()), data);
   }
 
   // Get city coordinates from backend instead of using mock data

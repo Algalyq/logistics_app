@@ -47,9 +47,23 @@ export default function LoginScreen() {
     setIsLoading(true);
     try {
       // Call API for authentication
-      await apiClient.login(username, password);
-      // Navigate to the main screen if successful
-      router.replace('/(tabs)');
+      const response = await apiClient.login(username, password);
+      
+      // Navigate based on user role
+      const userRole = apiClient.getUserRole();
+      
+      if (userRole === 'driver') {
+        // Navigate to driver dashboard
+        router.replace('/driver');
+      } else if (userRole === 'customer') {
+        // Navigate to customer dashboard (tabs)
+        router.replace('/(tabs)');
+      } else {
+        // Default fallback
+        router.replace('/(tabs)');
+      }
+      
+      console.log(`Logged in as ${response.username} with role: ${response.role}`);
     } catch (error) {
       // Handle login error
       const errorMessage = error instanceof Error ? error.message : t('loginFailed');

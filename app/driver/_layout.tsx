@@ -6,11 +6,11 @@ import { useTranslation } from '@/translations/useTranslation';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
-// Using light theme only
 import { HapticTab } from '@/components/HapticTab';
 import apiClient from '@/api/client';
+import { HeaderLanguageSwitcher } from '@/components/HeaderLanguageSwitcher';
 
-export default function TabLayout() {
+export default function DriverTabLayout() {
   const { t } = useTranslation();
   const userRole = apiClient.getUserRole();
   
@@ -19,26 +19,30 @@ export default function TabLayout() {
     return <Redirect href="/auth/login" />;
   }
   
-  // Redirect drivers to driver layout
-  if (userRole === 'driver') {
-    return <Redirect href="/driver" />;
+  // Redirect non-drivers to customer layout
+  if (userRole !== 'driver') {
+    return <Redirect href="/customer" />;
   }
   
   // Log access for debugging
   useEffect(() => {
-    console.log('Customer tabs layout accessed by role:', userRole);
+    console.log('Driver tabs layout accessed by role:', userRole);
   }, []);
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors.light.primary, // Always use light theme primary color
-        headerShown: false,
+        tabBarActiveTintColor: Colors.light.primary,
+        headerShown: true,
+        headerTitleStyle: {
+          fontFamily: 'Comfortaa-SemiBold',
+          color: '#282828',
+        },
+        headerTintColor: '#35B468',
         tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,
         tabBarStyle: Platform.select({
           ios: {
-            // Use a transparent background on iOS to show the blur effect
             position: 'absolute',
           },
           default: {},
@@ -47,22 +51,32 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: t('home'),
+          title: t('driverDashboard'),
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          headerShown: false,
         }}
       />
       <Tabs.Screen
-        name="analysis"
+        name="my-orders"
         options={{
-          title: t('analysis'),
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="chart.bar.fill" color={color} />,
+          title: t('myOrders'),
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="list.bullet" color={color} />,
         }}
       />
       <Tabs.Screen
-        name="enhanced-orders"
+        name="documents"
         options={{
-          title: t('orders'),
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="shippingbox.fill" color={color} />,
+          title: t('documents'),
+          headerTitle: t('myDocuments'),
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="doc.text.fill" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: t('profile'),
+          headerTitle: t('myProfile'),
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.fill" color={color} />,
         }}
       />
     </Tabs>

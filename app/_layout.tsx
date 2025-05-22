@@ -21,9 +21,12 @@ export default function RootLayout() {
     <TranslationProvider>
       <ThemeProvider value={DefaultTheme}>
         <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="index" options={{ headerShown: false, title: '' }} />
+          <Stack.Screen name="index" options={{ headerShown: false, title: 'Welcome' }} />
           <Stack.Screen name="auth" options={{ headerShown: false }} />
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="customer" options={{ headerShown: false }} />
+          <Stack.Screen name="driver" options={{ headerShown: false }} />
+          <Stack.Screen name="profile" options={{ headerShown: false }} />
+          <Stack.Screen name="shared" options={{ headerShown: false }} />
           <Stack.Screen name="+not-found" options={{ title: 'Not Found' }} />
         </Stack>
         <StatusBar style="dark" />

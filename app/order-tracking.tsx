@@ -288,7 +288,6 @@ function OrderTrackingScreen() {
         }
         
         // Fetch order from API - API expects string ID
-        console.log("Order ID: ", orderId)
         const orderData = await orderService.getOrderById(String(orderId));
 
         if (!orderData) {
@@ -525,8 +524,8 @@ function OrderTrackingScreen() {
             )}
             source={{
               html: `<!DOCTYPE html>
-<html>
-<head>
+                    <html>
+                    <head>
                     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
                     <style>
                       body { margin: 0; padding: 0; }
@@ -813,12 +812,13 @@ function OrderTrackingScreen() {
                 try {
                   const message = JSON.parse(event.nativeEvent.data);
                   if (message.type === 'error') {
-                    console.error('Map error:', message.message);
+                    console.error('Map error:', message);
                   }
                 } catch (e) {
                   console.error('Error parsing WebView message:', e);
                 }
-              }}
+              }
+            }
             />
           </View>
         ) : (

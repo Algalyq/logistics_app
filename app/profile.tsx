@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, TouchableOpacity, Image, ScrollView, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -8,24 +8,83 @@ import { tabStyles } from '@/assets/styles/tabStyles';
 import { COLORS } from '@/assets/styles/authStyles';
 import { useTranslation } from '@/translations/useTranslation';
 import { MaterialIcons } from '@expo/vector-icons';
+import profileService, { ProfileData } from '@/api/profileService';
+import { Colors } from '@/constants/Colors';
+import authService from '@/api/authService';
 
 export default function ProfileScreen() {
   const router = useRouter();
   const { t } = useTranslation();
+  const [profile, setProfile] = useState<ProfileData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   
   const goBack = () => {
     router.back();
   };
   
-  // Mock user data
-  const userData = {
-    fullName: 'Nurzhan Akhmetov',
-    email: 'nurzhan.akhmetov@example.com',
-    phone: '+7 (707) 123-4567',
-    company: 'Trackit Logistics',
-    role: 'Logistics Manager'
+  // Logout handler
+  const handleLogout = async () => {
+    try {
+      // Show loading indicator or disable the button here if needed
+      const success = await authService.logout();
+      if (success) {
+        // Navigate to login screen
+        router.replace('/auth/login');
+      } else {
+        // Handle logout failure
+        console.error('Logout failed');
+        // Could show an alert or notification here
+      }
+    } catch (error) {
+      console.error('Error during logout:', error);
+      // Handle the error, perhaps show a message to the user
+    }
   };
   
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        setLoading(true);
+        const profileData = await profileService.getProfile();
+        setProfile(profileData);
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching profile:', err);
+        setError('Failed to load profile data');
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchProfile();
+  }, []);
+  
+  if (loading) {
+    return (
+      <ThemedView style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={Colors.light.primary} />
+      </ThemedView>
+    );
+  }
+
+  if (error || !profile) {
+    return (
+      <ThemedView style={styles.loadingContainer}>
+        <ThemedText style={styles.errorText}>{error || 'Profile not found'}</ThemedText>
+        <TouchableOpacity 
+          style={tabStyles.actionButton}
+          onPress={() => setLoading(true)}
+        >
+          <ThemedText style={tabStyles.actionButtonText}>Refresh</ThemedText>
+        </TouchableOpacity>
+      </ThemedView>
+    );
+  }
+  
+  const fullName = `${profile.first_name} ${profile.last_name}`;
+  const userRole = profile.role?.charAt(0).toUpperCase() + profile.role?.slice(1) || 'User';
+
   return (
     <ThemedView style={styles.container}>
       {/* Header */}
@@ -48,8 +107,8 @@ export default function ProfileScreen() {
               style={styles.profileImage}
             />
           </View>
-          <ThemedText style={styles.userName}>{userData.fullName}</ThemedText>
-          <ThemedText style={styles.userRole}>{userData.role}</ThemedText>
+          <ThemedText style={styles.userName}>{fullName}</ThemedText>
+          <ThemedText style={styles.userRole}>{userRole}</ThemedText>
         </View>
         
         {/* User Information */}
@@ -58,23 +117,46 @@ export default function ProfileScreen() {
           
           <View style={styles.infoRow}>
             <ThemedText style={styles.infoLabel}>{t('email')}:</ThemedText>
-            <ThemedText style={styles.infoValue}>{userData.email}</ThemedText>
+            <ThemedText style={styles.infoValue}>{profile.email}</ThemedText>
           </View>
           
           <View style={styles.infoRow}>
             <ThemedText style={styles.infoLabel}>{t('phone')}:</ThemedText>
-            <ThemedText style={styles.infoValue}>{userData.phone}</ThemedText>
+            <ThemedText style={styles.infoValue}>{profile.phone || 'No phone number'}</ThemedText>
           </View>
           
           <View style={styles.infoRow}>
             <ThemedText style={styles.infoLabel}>{t('company')}:</ThemedText>
-            <ThemedText style={styles.infoValue}>{userData.company}</ThemedText>
+            <ThemedText style={styles.infoValue}>{profile.company_name || profile.vehicle_type || 'Not specified'}</ThemedText>
           </View>
-        </View>
-        
-        
-        
 
+          
+          {/* Driver-specific information */}
+          {profile.role === 'driver' && (
+            <>
+              {profile.experience_years !== undefined && (
+                <View style={styles.infoRow}>
+                  <ThemedText style={styles.infoLabel}>Experience:</ThemedText>
+                  <ThemedText style={styles.infoValue}>{profile.experience_years} years</ThemedText>
+                </View>
+              )}
+              
+              {profile.total_kilometers !== undefined && (
+                <View style={styles.infoRow}>
+                  <ThemedText style={styles.infoLabel}>Total Distance:</ThemedText>
+                  <ThemedText style={styles.infoValue}>{profile.total_kilometers} km</ThemedText>
+                </View>
+              )}
+              
+              {profile.assigned_truck && (
+                <View style={styles.infoRow}>
+                  <ThemedText style={styles.infoLabel}>Assigned Truck:</ThemedText>
+                  <ThemedText style={styles.infoValue}>{JSON.stringify(profile.assigned_truck)}</ThemedText>
+                </View>
+              )}
+            </>
+          )}
+        </View>
         
         {/* Other Settings */}
         <View style={tabStyles.card}>
@@ -97,7 +179,10 @@ export default function ProfileScreen() {
         </View>
         
         {/* Logout Button */}
-        <TouchableOpacity style={styles.logoutButton}>
+        <TouchableOpacity 
+          style={styles.logoutButton}
+          onPress={handleLogout}
+        >
           <ThemedText style={styles.logoutText}>{t('logout')}</ThemedText>
         </TouchableOpacity>
       </ScrollView>
@@ -106,6 +191,20 @@ export default function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: '#FBFBFB',
+  },
+  errorText: {
+    fontSize: 16,
+    fontFamily: 'Comfortaa-Medium',
+    color: '#FF3B30',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
   container: {
     flex: 1,
     backgroundColor: '#F5F7FA',
