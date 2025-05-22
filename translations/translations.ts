@@ -12,6 +12,20 @@ export type TranslationKeys = {
   loadingOrderData: string;
   orderNotFound: string;
   liveTracking: string;
+  delivery: string;
+  estimatedArrival: string;
+  waitingForDriver: string;
+  deliveryCompleted: string;
+  viewFullMap: string;
+  refreshMap: string;
+  guest: string;
+  
+  // Analytics
+  revenue: string;
+  analyticsOrders: string;
+  onTimeDelivery: string;
+  cancelRate: string;
+  monthlyTrends: string;
   
   // Order Details
   orderDetails: string;
@@ -181,6 +195,22 @@ export const translations: Record<Language, TranslationKeys> = {
     loadingOrderData: 'Loading order data...',
     orderNotFound: 'Order not found',
     liveTracking: 'Live Tracking',
+    delivery: 'Delivery Truck',
+    estimatedArrival: 'Estimated arrival time',
+    waitingForDriver: 'Waiting for driver',
+    deliveryCompleted: 'Delivery completed',
+    viewFullMap: 'View full map',
+    refreshMap: 'Reset map view',
+    guest: 'Guest',
+    
+    // Analytics
+    revenue: 'Revenue',
+    analyticsOrders: 'Orders',
+    onTimeDelivery: 'On-time Delivery',
+    cancelRate: 'Cancel Rate',
+    monthlyTrends: 'Monthly Trends',
+
+    
     
     // Order Details
     orderDetails: 'Order Details',
@@ -349,6 +379,21 @@ export const translations: Record<Language, TranslationKeys> = {
     loadingOrderData: 'Загрузка данных заказа...',
     orderNotFound: 'Заказ не найден',
     liveTracking: 'Отслеживание',
+    delivery: 'Грузовик доставки',
+    estimatedArrival: 'Ожидаемое время прибытия',
+    waitingForDriver: 'Ожидание водителя',
+    deliveryCompleted: 'Доставка завершена',
+    viewFullMap: 'Посмотреть полную карту',
+    refreshMap: 'Сбросить вид карты',
+    guest: 'Гость',
+    
+    // Analytics
+    revenue: 'Доход',
+    analyticsOrders: 'Заказы',
+    onTimeDelivery: 'Своевременная доставка',
+    cancelRate: 'Частота отмены',
+    monthlyTrends: 'Ежемесячные тренды',
+
     
     // Order Details
     orderDetails: 'Детали заказа',
@@ -517,6 +562,20 @@ export const translations: Record<Language, TranslationKeys> = {
     loadingOrderData: 'Тапсырыс деректері жүктелуде...',
     orderNotFound: 'Тапсырыс табылмады',
     liveTracking: 'Тірі бақылау',
+    delivery: 'Жеткізу көлігі',
+    estimatedArrival: 'Болжамды келу уақыты',
+    waitingForDriver: 'Жүргізушіні күту',
+    deliveryCompleted: 'Жеткізу аяқталды',
+    viewFullMap: 'Толық картаны көру',
+    refreshMap: 'Карта көрінісін бастапқы қалпына келтіру',
+    guest: 'Қонақ',
+    
+    // Analytics
+    revenue: 'Түсім',
+    analyticsOrders: 'Тапсырыстар',
+    onTimeDelivery: 'Уақтылы жеткізу',
+    cancelRate: 'Бас тарту жиілігі',
+    monthlyTrends: 'Айлық трендтер',
     
     // Order Details
     orderDetails: 'Тапсырыс мәліметтері',

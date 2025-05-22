@@ -7,6 +7,9 @@ import { useTranslation } from '@/translations/useTranslation';
 import { MaterialIcons } from '@expo/vector-icons';
 import apiClient from '@/api/client';
 import orderService, { OrderDetail } from '@/api/orderService';
+// Import components
+import OrderMapView from '../components/OrderMapView';
+import FullScreenMapModal from '../components/FullScreenMapModal';
 
 export default function OrderDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -17,6 +20,7 @@ export default function OrderDetailsScreen() {
   const [order, setOrder] = useState<OrderDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [mapModalVisible, setMapModalVisible] = useState(false);
   
   // Fetch order details
   useEffect(() => {
@@ -50,6 +54,7 @@ export default function OrderDetailsScreen() {
       await orderService.updateOrderStatus(id, newStatus);
       // Refetch order details to get the updated data
       const updatedOrder = await orderService.getOrderById(id);
+      console.log('Updated order:', updatedOrder);
       setOrder(updatedOrder);
     } catch (err) {
       console.error('Error updating order status:', err);
@@ -120,9 +125,20 @@ export default function OrderDetailsScreen() {
           </View>
         </View>
         
-        {/* Locations */}
+        {/* Locations - Clickable for drivers */}
         <View style={styles.section}>
-          <ThemedText style={styles.sectionTitle}>{t('locations')}</ThemedText>
+          {userRole === 'driver' ? (
+            <TouchableOpacity 
+              style={styles.locationHeaderTouch} 
+              onPress={() => setMapModalVisible(true)}
+              activeOpacity={0.7}
+            >
+              <ThemedText style={styles.sectionTitle}>{t('locations')}</ThemedText>
+              <MaterialIcons name="map" size={20} color="#35B468" />
+            </TouchableOpacity>
+          ) : (
+            <ThemedText style={styles.sectionTitle}>{t('locations')}</ThemedText>
+          )}
           <View style={styles.card}>
             <DetailRow label={t('origin')} value={order.origin.name} />
             <DetailRow label={t('destination')} value={order.destination.name} />
@@ -135,7 +151,37 @@ export default function OrderDetailsScreen() {
               <DetailRow label={t('deliveredOn')} value={order.delivered_on} />
             )}
           </View>
+          
+          {/* Show a hint for drivers */}
+          {userRole === 'driver' && (
+            <TouchableOpacity 
+              style={styles.viewMapButton} 
+              onPress={() => setMapModalVisible(true)}
+            >
+              <ThemedText style={styles.viewMapText}>{t('viewFullMap')}</ThemedText>
+              <MaterialIcons name="open-in-full" size={16} color="#35B468" />
+            </TouchableOpacity>
+          )}
         </View>
+        
+        {/* Map View for Drivers */}
+        {userRole === 'driver' && (
+          <View style={styles.mapSection}>
+            <OrderMapView 
+              origin={{
+                latitude: order.origin?.latitude || 43.2200, 
+                longitude: order.origin?.longitude || 76.8513,
+                address: order.origin?.name
+              }}
+              destination={{
+                latitude: order.destination?.latitude || 43.2551, 
+                longitude: order.destination?.longitude || 76.9126,
+                address: order.destination?.name
+              }}
+              status={order.status}
+            />
+          </View>
+        )}
         
         {/* Customer Details */}
         <View style={styles.section}>
@@ -166,7 +212,7 @@ export default function OrderDetailsScreen() {
         {/* Actions for driver */}
         {userRole === 'driver' && order.status === 'in-progress' && (
           <View style={styles.section}>
-            <ThemedText style={styles.sectionTitle}>Actions</ThemedText>
+            <ThemedText style={styles.sectionTitle}>{t('actions')}</ThemedText>
             <View style={styles.actionsContainer}>
               <TouchableOpacity 
                 style={[styles.actionButton, styles.completeButton]}
@@ -174,13 +220,7 @@ export default function OrderDetailsScreen() {
               >
                 <ThemedText style={styles.actionButtonText}>{t('markAsCompleted')}</ThemedText>
               </TouchableOpacity>
-              
-              <TouchableOpacity 
-                style={[styles.actionButton, styles.cancelButton]}
-                onPress={() => handleUpdateStatus('cancelled')}
-              >
-                <ThemedText style={styles.actionButtonText}>{t('cancel')}</ThemedText>
-              </TouchableOpacity>
+            
             </View>
           </View>
         )}
@@ -198,6 +238,25 @@ export default function OrderDetailsScreen() {
           </View>
         )}
       </ScrollView>
+      
+      {/* Full Screen Map Modal */}
+      {order && (
+        <FullScreenMapModal
+          visible={mapModalVisible}
+          onClose={() => setMapModalVisible(false)}
+          origin={{
+            latitude: order.origin?.latitude || 43.2200, 
+            longitude: order.origin?.longitude || 76.8513,
+            name: order.origin?.name,
+          }}
+          destination={{
+            latitude: order.destination?.latitude || 43.2551, 
+            longitude: order.destination?.longitude || 76.9126,
+            name: order.destination?.name,
+          }}
+          status={order.status}
+        />
+      )}
     </ThemedView>
   );
 }
@@ -236,6 +295,31 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#FBFBFB',
+  },
+  mapSection: {
+    marginVertical: 15,
+    paddingHorizontal: 15,
+  },
+  locationHeaderTouch: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingRight: 15,
+  },
+  viewMapButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 10,
+    padding: 8,
+    borderRadius: 8,
+    backgroundColor: 'rgba(53, 180, 104, 0.1)',
+  },
+  viewMapText: {
+    color: '#35B468',
+    marginRight: 5,
+    fontSize: 14,
+    fontFamily: 'Comfortaa-Medium',
   },
   scrollView: {
     flex: 1,

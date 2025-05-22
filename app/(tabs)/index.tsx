@@ -110,10 +110,10 @@ export default function HomeScreen() {
               </ThemedView>
             }
           >
-            <ThemedView style={styles.profitContainer}>
+            <View style={styles.profitContainer}>
               <ThemedText style={styles.currency}>$</ThemedText>
               <ThemedText style={styles.profitAmount}>{getProfitByPeriod().toLocaleString()}</ThemedText>
-            </ThemedView>
+            </View>
           </Card>
         </ThemedView>
         
@@ -197,6 +197,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingTop: 16,
+    height: 1000,
   },
   currency: {
     fontSize: 24,
